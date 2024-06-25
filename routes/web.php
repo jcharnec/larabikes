@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\BikeController;
 use App\Http\Controllers\WelcomeController;
 use Illuminate\Http\Request;
+use App\Models\Bike;
 
 /*
 |--------------------------------------------------------------------------
@@ -28,14 +29,15 @@ Route::get('patata', [WelcomeController::class, 'index'])->name('welcome');
 Route::resource('bikes', BikeController::class);
 
 // formulario de confirmación de eliminacion
-Route::get('bikes/{bike}/delete', [BikeController::class, 'delete'])->name('bikes.delete');
+Route::get('bikes/{bike}/delete', [BikeController::class, 'delete'])
+    ->name('bikes.delete');
 
+// para buscar motos por marca y/o modelo
+Route::get('bike/search/{marca?}/{modelo?}', [BikeController::class, 'search'])
+    ->name('bikes.search');
+    
 //RUTA DE FALLBACK, ruta a la que irá si no coinciden las demás rutas.
 Route::fallback([WelcomeController::class, 'index']);
-
-// ruta para la confirmación de eliminación
-Route::get('bikes/{bike}/delete', [BikeController::class, 'delete'])
-    ->name('bikes.delete'); 
 
 // ruta de test
 Route::get('/test', function(){
@@ -86,3 +88,71 @@ Route::delete('test', function(){
 
 //Carrega directament la vista
 //Route::view('test', 'welcome');
+/*
+// ruta con dos párametros variables
+Route::get('test/{nombre}/{edad}', function($nombre, $edad){
+    return "Hola $nombre, tienes $edad años.";
+});
+
+// ruta con un párametro variable
+Route::get('test/{nombre}', function($nombre){
+    return "Hola $nombre, bienvenido al curso.";
+});*/
+
+// importante no solapar las rutas, si tenemos dos rutas iguales y una usa id, este
+// no es considerado númerico a no ser que se indique explicitamente con id:int, en ese
+//caso si la ruta id es primera, al poner cualquier cosa, o create entraria en la de id
+// por ese motivo si queremos crear una moto y que entre por esa ruta, create irá primero
+// para que no exista un solapamiento.
+/*Route::get('test/{id:int}', function ($id){
+    return "Intenta visualizar la moto $id.";
+});*/
+/*
+Route::get('test/create', function(){
+    return "Intentas crear una nueva moto.";
+});
+
+Route::get('test/{id}', function ($id){
+    return "Intenta visualizar la moto $id.";
+});*/
+
+/*
+// ruta con dos parámetros opcionales, hay que tener en cuenta que no encontraria solo con search
+//ya que tenemos el resource encima y coincidiria con otro bikes/{id}
+Route::get(
+    'bikes/search/{marca?}/{modelo?}',
+    function($marca = '', $modelo = ''){
+
+        // busca las motos con esa marca y modelo
+        $bikes = Bike::where ('marca', 'like', '%'.$marca.'%')
+            ->where('modelo', 'like', '%'.$modelo.'%')
+            ->paginate(config('pagination.bikes'));
+        
+        return view('bikes.list', ['bikes' => $bikes]);
+        }
+    );*/
+
+
+/*
+// Usando expresiones regulares
+Route::get('test/{id}', function($id){
+    return "Has accedido por la primera ruta.";
+    })->where('id', '^\d{1,11}$'); // de 1 a 11 dígitos
+
+Route::get('test/{dni}', function($dni){
+    return "Has accedido por la segunda ruta.";
+    })->where('dni', '^[\dXYZ]\d{7}[A-Z]$'); //DNI
+
+Route::get('test/{otro}', function($otro){
+    return "$otro no es número ni un DNI.";
+    });
+*/
+
+// personalizando la lógica
+Route::get('bikes/chollos/{precio}', function($precio){
+    // precio contendrá una lista de motos de precio
+    //inferior o igual al recibido por parámetro
+    //la lógica s eencuentra en el proveedor de servicios RouteServiceProvider
+
+    return view('bikes.list', ['bikes' => $precio]);
+});

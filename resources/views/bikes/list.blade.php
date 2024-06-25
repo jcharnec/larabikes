@@ -4,6 +4,23 @@
     @section('titulo', 'Listado Motos')
 
     @section('contenido')
+    <form method="GET" class="col-6 row"
+        action="{{route('bikes.search')}}">
+    
+        <input type="text" name="marca" class="col form-control mr-2 mb-2" 
+                placeholder="Marca" maxlength="16"
+                value="{{ $marca ?? ''}}">
+
+        <input name="modelo" type="text" class="col form-control mr-2 mb-2"
+                placeholder="Modelo" maxlength="16"
+                value="{{ $modelo ?? ''}}">
+            
+        <button type="submit" class="col btn btn-primary mr-2 mb-2">Buscar</button>
+        <a href="{{ route('bikes.index') }}">
+            <button type="button" class="col btn btn-secondary mr-2 mb-2">Quitar filtro</button>
+        </a>
+
+    </form>
 
     <div class="row">
         <div class="col-6 text-start">{{ $bikes->links() }}</div>
@@ -34,7 +51,7 @@
         </tr>
         @endforeach
         <tr>
-            <td colspan="4">Mostrando {{sizeof($bikes)}} de {{$total}}.</td>
+            <td colspan="4">Mostrando {{sizeof($bikes)}} de {{$bikes->total()}}.</td>
         </tr>
     </table>
     @endsection

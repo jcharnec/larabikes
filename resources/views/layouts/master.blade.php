@@ -15,20 +15,22 @@
 
     <!-- PARTE SUPERIOR -->
     @section('navegacion')
-    @php($pagina = $pagina ?? '')
+    <!-- @php($pagina = $pagina ?? '') --> 
+    @php($pagina = Route::currentRouteName())
 
     <nav>
         <ul class="nav nav-pills my-3">
             <li class="nav-item mr-2">
                 <a class="nav-link {{$pagina =='portada'? 'active' : ''}}" 
-                    href="{{url('/')}}">Inicio</a>
+                    href="{{route('welcome')}}">Inicio</a>
             </li>
             <li class="nav-item mr-2">
-                <a class="nav-link {{$pagina =='listamotos'? 'active':''}}"
+                <a class="nav-link {{$pagina == 'bikes.index' ||
+                                    $pagina == 'bikes.search'? 'active':''}}"
                     href="{{route('bikes.index')}}">Garaje</a>
             </li>
-            <li class="nav-item">
-                <a class="nav-link {{$pagina =='nuevamoto'? 'active':''}}" 
+            <li class="nav-item mr-2">
+                <a class="nav-link {{$pagina =='bikes.create'? 'active':''}}" 
                     href="{{route('bikes.create')}}">Nueva moto</a>
             </li>
         </ul>
