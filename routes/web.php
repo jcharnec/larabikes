@@ -25,16 +25,21 @@ Route::get('/', [WelcomeController::class, 'index'])->name('welcome');
 
 Route::get('patata', [WelcomeController::class, 'index'])->name('welcome');
 
+// para buscar motos por marca y/o modelo
+Route::match(['GET', 'POST'],'bike/search', [BikeController::class, 'search'])
+    ->name('bikes.search');
+    //->middleware('adult:13');
+
 // CRUD de motos
 Route::resource('bikes', BikeController::class);
+    //->middleware('adult:18');
 
 // formulario de confirmación de eliminacion
 Route::get('bikes/{bike}/delete', [BikeController::class, 'delete'])
-    ->name('bikes.delete');
+    ->name('bikes.delete')
+    ->middleware('throttle:3,1'); //max 3 peticiones por cada 1 min
+    //->middleware('adult:21');
 
-// para buscar motos por marca y/o modelo
-Route::get('bike/search/{marca?}/{modelo?}', [BikeController::class, 'search'])
-    ->name('bikes.search');
     
 //RUTA DE FALLBACK, ruta a la que irá si no coinciden las demás rutas.
 Route::fallback([WelcomeController::class, 'index']);
@@ -155,4 +160,22 @@ Route::get('bikes/chollos/{precio}', function($precio){
     //la lógica s eencuentra en el proveedor de servicios RouteServiceProvider
 
     return view('bikes.list', ['bikes' => $precio]);
+});
+
+//prefijos para agrupar middleware
+Route::prefix('admin')->group(function(){
+    // he definido las rutas de la prueba con clausaras, evidentemente
+    //podría haber indicado controlador y método
+    Route::get('bikes', function(){
+        return "Estás en admin/bikes, método GET";
+    });
+    Route::post('bikes', function(){
+        return "Estás en admin/bikes, método POST";
+    });
+    Route::put('bikes', function(){
+        return "Estás en admin/bikes, método PUT";
+    });
+    Route::delete('bikes', function(){
+        return "Estás en admin/bikes, método DELETE";
+    });
 });

@@ -5,7 +5,7 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 
-class CheckAge
+class FirefoxRules
 {
     /**
      * Handle an incoming request.
@@ -14,15 +14,11 @@ class CheckAge
      * @param  \Closure(\Illuminate\Http\Request): (\Illuminate\Http\Response|\Illuminate\Http\RedirectResponse)  $next
      * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
      */
-    public function handle(Request $request, Closure $next, int $minimo)
+    public function handle(Request $request, Closure $next)
     {
-        //miramos si el usuario es menor de edad
-        if($request->query('edad')<$minimo)
-            abort(403, 'Acceso denegado, debes ser mayor de edad para acceder a este contenido.');
+        if(!str_contains($request->header('user_agent'), 'Firefox'))
+            abort(403, 'Solamente se puede usar Firefox');
 
-        // cuando tengamso el modelo User, podremos comprobar la edad del usuario
-        // id($user->edad <18)...
-        
         return $next($request);
     }
 }

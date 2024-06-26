@@ -30,8 +30,13 @@
                     href="{{route('bikes.index')}}">Garaje</a>
             </li>
             <li class="nav-item mr-2">
-                <a class="nav-link {{$pagina =='bikes.create'? 'active':''}}" 
-                    href="{{route('bikes.create')}}">Nueva moto</a>
+                <!--<a class="nav-link {{$pagina =='bikes.create'? 'active':''}}" 
+                    href="{{route('bikes.create')}}">Nueva moto</a>-->
+                    <!-- Uso del helper action, nos permite generar una URL directamente a partir
+                     de un método de controlador, si hay que indicar parametros en la ruta, podemos indicarlos
+                     con un array como segundo parametro: action([...],['bike' => 1]); -->
+                    <a class="nav-link {{$pagina =='bikes.create'? 'active':''}}" 
+                    href="{{action([App\Http\Controllers\BikeController::class, 'create'])}}">Nueva moto</a>
             </li>
         </ul>
     </nav>
@@ -58,9 +63,9 @@
         @endif
         
         <!-- Probando el nuevo componente -->
-        <x-alert type="success" message="Pasando información al componente">
+        <!--<x-alert type="success" message="Pasando información al componente">
             <p>Hay otro mensaje:</p>
-        </x-alert>
+        </x-alert>-->
         
         <p>Contamos con un catálogo de {{$total}} motos.</p>
 
@@ -68,7 +73,8 @@
         <div class="d-flex justify-content-center">
             <div class="btn-group" role="group" aria-label="links">
                 @section('enlaces')
-                <a href="{{ url('/') }}" class="btn btn-primary m-2">Inicio</a>
+                <a href="{{url()->previous()}}" class="btn btn-primary m-2">Atrás</a> 
+                <a href="{{ route('welcome') }}" class="btn btn-primary m-2">Inicio</a>
                 @show
             </div>
         </div>
