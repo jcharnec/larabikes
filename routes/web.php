@@ -43,13 +43,13 @@ Route::get('bikes/{bike}/delete', [BikeController::class, 'delete'])
     
 //RUTA DE FALLBACK, ruta a la que irá si no coinciden las demás rutas.
 Route::fallback([WelcomeController::class, 'index']);
-
+/*
 // ruta de test
 Route::get('/test', function(){
     Log::info("Tienes un nuevo mensaje :D");
 
     return "Consulta el fichero de log.";
-});
+});*/
 
 //ZONA PARA PRUEBAS (borrar al finalizar)
 Route::get('saludar', function(){
@@ -60,7 +60,9 @@ Route::get('saludar', function(){
     return 'Estás haciendo la prueba por '.$request->getMethod();
 });*/
 
-Route::redirect('test', 'bikes', 301);
+
+//Route::redirect('test', 'bikes', 301);
+
 
 /*Route::get('test', function(){
     return 'Estás haciendo la prueba por GET.';
@@ -179,3 +181,82 @@ Route::prefix('admin')->group(function(){
         return "Estás en admin/bikes, método DELETE";
     });
 });
+/*
+Route::get('test', function(){
+    //retorna un array que convertirá en un Response JSON completa
+    return[
+        'nombre' => 'Juan',
+        'apellido' => 'Pérez',
+        'edad' => NULL,
+        'vehiculo' => 'bicicleta',
+        'dorsal' => 32
+    ];
+});*/
+
+Route::get('\bikes', function(){
+    // retorna la lista completa de motos
+    return Bike::all();
+});
+
+/*
+Route::get('test', function(){
+    //retorna un array que convertirá en un Response JSON completa
+    return response('Esta es una respuesta completa', 200);
+});*/
+
+/*
+Route::get('test', function(){
+    //retorna una respuesta de texto, con código 200
+    //y con múltiples encabezados
+    return response('Anexando headers', 200)
+        ->withHeaders([
+            'Content-type' => 'text/plain',
+            'From' => 'Robert Sallent',
+            'Place' => 'CIFO Sabadell',
+            'Year' => '2022'
+        ]);
+});*/
+
+/*
+Route::get('test', function(){
+    //retorna una respuesta sin contenido
+    return response()->noContent(200);
+});*/
+
+/*
+Route::get('test', function(){
+    //equivale a return view('welcome')
+    return response()->view('welcome');
+});*/
+
+/*
+// usaremos el implicit binding, he puesto el nombre plenamente
+// cualificado para ahorrarme el "use"
+Route::get('test/{bike}', function(Bike $bike){
+    return response()->json($bike);
+});*/
+
+/*
+Route::get('test', function(){
+    return response()->download(
+        public_path('images/bikes/bike0.png'),
+        'akira.png'  
+    );
+});*/
+
+/*
+Route::get('test', function(){
+    return response()->download(
+        storage_path('app\docs\IFCD45.pdf'),
+        'programa.pdf',
+        ['Content-type' => 'application/pdf']
+    );
+});*/
+
+/*
+Route::get('test', function(){
+    return response()->file(
+        public_path('images/bikes/bike0.png'),
+        ['Content-type' => 'image/png']
+    );
+});*/

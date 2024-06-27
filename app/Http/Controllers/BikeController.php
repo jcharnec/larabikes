@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Bike;
+use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\View;
 
 class BikeController extends Controller
@@ -85,7 +86,8 @@ class BikeController extends Controller
         $bike = Bike::create($request->all());
 
         //redirección a los detalles de la moto creada
-        return redirect()->route('bikes.show', $bike->id)
+        return redirect()
+            ->route('bikes.show', $bike->id)
             ->with('success', "Moto $bike->marca $bike->modelo añadida satisfactoriamente");
     }
 
@@ -172,8 +174,15 @@ class BikeController extends Controller
 
         $bike->update($request->all() + ['matriculada' => 0]); //actualiza
 
+        //encola las cookies
+        Cookie::queue('lastUpdateID', $bike->id, 0);
+        Cookie::queue('lastUpdateDate', now(), 0);
+        Cookie::queue('lastUpdate', 'Moto actualizada', 0);
+
         // carga la misma vista y muestra el mensaje de éxito
-        return back()->with('success', "Moto $bike->marca $bike->modelo actualizada");
+        return back()
+            ->with('success', "Moto $bike->marca $bike->modelo actualizada");
+            //->cookie('lastUpdateID', $bike->id,0);
     }
 
     /**

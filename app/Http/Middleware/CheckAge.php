@@ -18,7 +18,8 @@ class CheckAge
     {
         //miramos si el usuario es menor de edad
         if($request->query('edad')<$minimo)
-            abort(403, 'Acceso denegado, debes ser mayor de edad para acceder a este contenido.');
+            return redirect()->away('http://juegayestudia.com', 302);
+            //abort(403, 'Acceso denegado, debes ser mayor de edad para acceder a este contenido.');
 
         // cuando tengamso el modelo User, podremos comprobar la edad del usuario
         // id($user->edad <18)...
