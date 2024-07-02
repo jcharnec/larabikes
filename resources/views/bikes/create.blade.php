@@ -4,15 +4,18 @@
     @section('titulo', 'Nueva Moto')
 
     @section('contenido')
-    <form class="my-2 border p-5" method="POST" action="{{route('bikes.store')}}">
+    <form class="my-2 border p-5" method="POST" action="{{route('bikes.store')}}"
+    enctype="multipart/form-data">
         {{csrf_field()}}
         <div class="form-group row">
             <label for="inputMarca" class="col-sm-2 col-form-label">Marca</label>
-            <input name="marca" type="text" class="up form-control col-sm-10" id="inputMarca" placeholder="Marca" maxlength="255" value="{{old('marca')}}">
+            <input name="marca" type="text" class="up form-control col-sm-10"
+            id="inputMarca" placeholder="Marca" maxlength="255" value="{{old('marca')}}">
         </div>
         <div class="form-group row">
             <label for="inputModelo" class="col-sm-2 col-form-label">Modelo</label>
-            <input name="modelo" type="text" class="up form-control col-sm-10" id="inputModelo" placeholder="Modelo" maxlength="255" value="{{old('modelo')}}">
+            <input name="modelo" type="text" class="up form-control col-sm-10" 
+            id="inputModelo" placeholder="Modelo" maxlength="255" value="{{old('modelo')}}">
         </div>
         <div class="form-group row">
             <label for="inputKms" class="col-sm-2 col-form-label">Kms</label>
@@ -27,6 +30,11 @@
                 <input name="matriculada" value="1" class="form-check-input" type="checkbox" {{empty(old('matriculada'))? "" : "cheked"}}>
                 <label class="form-check-label">Matriculada</label>
             </div>
+        </div>
+        <div class="form-group row">
+            <label for="inputImagen" class="col-sm-2 col-form-label">Imagen</label>
+            <input name="imagen" type="file" class="form-control col-sm-10"
+            id="inputImagen" accept="image/*">
         </div>
         <div class="d-flex justify-content-center">
             <div class="form-group row">

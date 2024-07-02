@@ -24,6 +24,18 @@
                 <td>Matriculada</td>
                 <td>{{$bike->matriculada? 'SI':'NO'}}</td>
             </tr>
+            <tr>
+                <td>Imagen</td>
+                <td class="text-start">
+                    <img class="rounded" style="max-width:400px"
+                        alt="Imagen de {{$bike->marca}} {{$bike->modelo}}"
+                        title="Imagen de {{$bike->marca}} {{$bike->modelo}}"
+                        src="{{
+                            $bike->imagen?
+                            asset('storage/'.config('filesystems.bikesImageDir')).'/'.$bike->imagen:
+                            asset('storage/'.config('filesystems.bikesImageDir')).'/default.jpg'}}">
+                </td>
+            </tr>
         </table>
         <div class="text-end my-3">
             <div class="btn-group mx-2">

@@ -3,7 +3,7 @@
         @section('titulo', "Actualización de la moto $bike->marca $bike->modelo")
         
         @section('contenido')
-        <form class="my-2 border p-5" method="POST" action="{{route('bikes.update', $bike->id)}}">
+        <form class="my-2 border p-5" method="POST" action="{{route('bikes.update', $bike->id)}}" enctype="multipart/form-data">
             {{csrf_field()}}
             <input name="_method" type="hidden" value="PUT">
 
@@ -27,6 +27,37 @@
                 <div class="form-check">
                     <input name="matriculada" value="1" class="form-check-input" type="checkbox" {{$bike->matriculada? "checked":""}}>
                     <label class="form-check-label">Matriculada</label>
+                </div>
+            </div>
+            <div class="form-group row my-3">
+                <div class="col-sm-9">
+                    <label for="inputImagen" class="col-sm-2 col-form-label">
+                        {{$bike->imagen? 'Sustituir':'Añadir'}} imagen
+                    </label>
+                    <input name="imagen" type="file" class="form-control-file" id="inputImagen">
+
+                    @if($bike->imagen)
+                    <div class="form-check my-3">
+                        <input name="eliminarimagen" type="checkbox"
+                            class="form-check-input" id="inputEliminar">
+                        <label for="inputEliminar" class="form-check-label">Eliminar imagen</label>
+                    </div>
+                    <script>
+                        inputEliminar.onchange = function(){
+                            inputImagen.disabled = this.checked;
+                        }
+                    </script>
+                    @endif
+                </div>
+                <div class="col-sm-3">
+                    <label>Imagen actual:</label>
+                    <img class="rounded img-thumbnail my-3"
+                        alt="Imagen de {{$bike->marca}} {{$bike->modelo}}"
+                        title="Imagen de {{$bike->marca}} {{$bike->modelo}}"
+                        src="{{
+                            $bike->imagen?
+                            asset('storage/'.config('filesystems.bikesImageDir')).'/'.$bike->imagen:
+                            asset('storage/'.config('filesystems.bikesImageDir')).'/default.jpg'}}">
                 </div>
             </div>
             <div class="form-group row">

@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Bike;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\View;
+use Illuminate\Support\Facades\Storage;
 
 class BikeController extends Controller
 {
@@ -33,21 +34,22 @@ class BikeController extends Controller
      * @param mixed $name
      * 
      */
-    public function search(Request $request, $marca = null, $modelo = null){
+    public function search(Request $request, $marca = null, $modelo = null)
+    {
 
         //toma los valores que llegan para marca y modelo
         //pueden llegar vía URL o vía query string
         //por defecto les asignaremos ''
-        $marca = $marca ?? $request->input('marca','');
+        $marca = $marca ?? $request->input('marca', '');
         $modelo = $modelo ?? $request->input('modelo', '');
 
         //recupera los resultados, se añade marca y modelo al paginador
         //para que mantenga el filtro al pasar página
-        $bikes = Bike::where('marca', 'LIKE', '%'.$marca.'%')
-                    ->where('modelo', 'LIKE', "%$modelo%")
-                    ->paginate(config('paginator.bikes', 5))
-                    ->appends(['marca' => $marca, 'modelo' => $modelo]);
-                
+        $bikes = Bike::where('marca', 'LIKE', '%' . $marca . '%')
+            ->where('modelo', 'LIKE', "%$modelo%")
+            ->paginate(config('paginator.bikes', 5))
+            ->appends(['marca' => $marca, 'modelo' => $modelo]);
+
         return view('bikes.list', [
             'bikes' => $bikes,
             'marca' => $marca,
@@ -79,16 +81,33 @@ class BikeController extends Controller
             'modelo' => 'required|max:255',
             'precio' => 'required|numeric',
             'kms' => 'required|integer',
-            'matriculada' => 'sometimes'
+            'matriculada' => 'sometimes',
+            'imagen' => 'sometimes|file|image|mimes:jpg,png,gif,webp|max:2048'
         ]);
 
+        // recuperar datos del forumlario excepto la imagen
+        $datos = $request->only(['marca', 'modelo', 'precio', 'kms', 'matriculada']);
+
+        //el valor por defecto para la imagen será NULL
+        $datos += ['imagen' => NULL];
+
+        //recuperación de la imagen
+        if ($request->hasFile('imagen')) {
+            //sube la imagen al directorio indicando en el fichero de config
+            $ruta = $request->file('imagen')->store(config('filesystems.bikesImageDir'));
+
+            //nos quedamos solo con el nombre del fichero para añadirlo a la BDD
+            $datos['imagen'] = pathinfo($ruta, PATHINFO_BASENAME);
+        }
+
         //creación y guardado de la nueva moto con todos los datos POST
-        $bike = Bike::create($request->all());
+        $bike = Bike::create($datos);
 
         //redirección a los detalles de la moto creada
         return redirect()
             ->route('bikes.show', $bike->id)
-            ->with('success', "Moto $bike->marca $bike->modelo añadida satisfactoriamente");
+            ->with('success', "Moto $bike->marca $bike->modelo añadida satisfactoriamente")
+            ->cookie('lastInsertID', $bike->id, 0);
     }
 
     /**
@@ -170,9 +189,42 @@ class BikeController extends Controller
             'precio' => 'required|numeric',
             'kms' => 'required|integer',
             'matriculada' => 'sometimes',
+            'imagen' => 'sometimes|file|image|mimes:jpg,png,gif,webp|max:4096'
         ]);
+        
+        // toma los datos del formulario
+        $datos = $request->only('marca', 'modelo', 'kms', 'precio');
 
-        $bike->update($request->all() + ['matriculada' => 0]); //actualiza
+        // mira si llega el chekbox y pone 1 o 0 dependiendo de si llega o no
+        $datos += $request->has('matriculada') ? ['matriculada'=>1] : ['matriculada'=>0];
+
+        // si llega una nueva imagen..
+        if ($request->hasFile('imagen')) {
+            // marca la imagen antigua para ser borrada si el update va bien
+            if($bike->imagen)
+                $aBorrar = config('filesystems.bikesImageDir').'/'.$bike->imagen;
+
+            // sube la imagen al directorio indicado en el fichero de config
+            $imagenNueva = $request->file('imagen')->store(config('filesystems.bikesImageDir'));
+
+            // nos quedamos solo con el nombre del fichero para añadirlo a la BDD
+            $datos['imagen'] = pathinfo($imagenNueva, PATHINFO_BASENAME);
+        }
+        
+        // en caso de que nos pidan eliminar la imagen
+        if ($request->filled('eliminarimagen') && $bike->imagen){
+            $datos['imagen'] = NULL;
+            $aBorrar = config('filesystems.bikesImageDir').'/'.$bike->imagen;
+        }
+
+        // al actualizar debemos tener en cuenta varias cosas
+        if ($bike->update($datos)){
+            if(isset($aBorrar))
+                Storage::delete($aBorrar);
+        }else{
+            if(isset($imagenNueva))
+                Storage::delete($imagenNueva);
+        }
 
         //encola las cookies
         Cookie::queue('lastUpdateID', $bike->id, 0);
@@ -182,7 +234,7 @@ class BikeController extends Controller
         // carga la misma vista y muestra el mensaje de éxito
         return back()
             ->with('success', "Moto $bike->marca $bike->modelo actualizada");
-            //->cookie('lastUpdateID', $bike->id,0);
+        //->cookie('lastUpdateID', $bike->id,0);
     }
 
     /**
@@ -206,11 +258,13 @@ class BikeController extends Controller
     public function destroy(Request $request, Bike $bike)
     {
         // comprobar la validez de la firma de la URL
-        if(!$request->hasValidSignature())
+        if (!$request->hasValidSignature())
             abort(401, 'La firma de la URL no se pudo validar');
 
         // la borra de la base de datos
-        $bike->delete();
+        if ($bike->delete() && $bike->imagen)
+            //elimina el fichero
+            Storage::delete(config('filesystems.bikesImageDir') . '/' . $bike->imagen);
 
         //redirige a la lista de motos
         return redirect('bikes')

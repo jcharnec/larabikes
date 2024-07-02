@@ -13,8 +13,10 @@ return [
     |
     */
 
-    'default' => env('FILESYSTEM_DRIVER', 'local'),
+    'default' => env('FILESYSTEM_DRIVER', 'public'),
 
+    // ruta por defecto para las fotos de las motos
+    'bikesImageDir' => 'images/bikes/',
     /*
     |--------------------------------------------------------------------------
     | Filesystem Disks
