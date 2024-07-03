@@ -30,6 +30,10 @@
                     href="{{route('bikes.index')}}">Garaje</a>
             </li>
             <li class="nav-item mr-2">
+                <a class="nav-link {{$pagina == 'contacto'? 'active':''}}"
+                href="{{route('contacto')}}">Contacto</a>
+            </li>
+            <li class="nav-item mr-2">
                 <!--<a class="nav-link {{$pagina =='bikes.create'? 'active':''}}" 
                     href="{{route('bikes.create')}}">Nueva moto</a>-->
                     <!-- Uso del helper action, nos permite generar una URL directamente a partir

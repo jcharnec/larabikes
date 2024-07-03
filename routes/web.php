@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\BikeController;
 use App\Http\Controllers\WelcomeController;
+use App\Http\Controllers\ContactoController;
 use Illuminate\Http\Request;
 use App\Models\Bike;
 
@@ -25,22 +26,30 @@ Route::get('/', [WelcomeController::class, 'index'])->name('welcome');
 
 Route::get('patata', [WelcomeController::class, 'index'])->name('welcome');
 
+// ruta para el formulario de contacto
+Route::get('/contacto', [ContactoController::class, 'index'])
+    ->name('contacto');
+
+Route::post('/contacto', [ContactoController::class, 'send'])
+    ->name('contacto.email');
+
 // para buscar motos por marca y/o modelo
-Route::match(['GET', 'POST'],'bike/search', [BikeController::class, 'search'])
+Route::match(['GET', 'POST'], 'bike/search', [BikeController::class, 'search'])
     ->name('bikes.search');
-    //->middleware('adult:13');
+//->middleware('adult:13');
 
 // CRUD de motos
 Route::resource('bikes', BikeController::class);
-    //->middleware('adult:18');
+//->middleware('adult:18');
 
 // formulario de confirmación de eliminacion
 Route::get('bikes/{bike}/delete', [BikeController::class, 'delete'])
     ->name('bikes.delete')
     ->middleware('throttle:3,1'); //max 3 peticiones por cada 1 min
-    //->middleware('adult:21');
+//->middleware('adult:21');
 
-    
+
+
 //RUTA DE FALLBACK, ruta a la que irá si no coinciden las demás rutas.
 Route::fallback([WelcomeController::class, 'index']);
 /*
@@ -52,7 +61,7 @@ Route::get('/test', function(){
 });*/
 
 //ZONA PARA PRUEBAS (borrar al finalizar)
-Route::get('saludar', function(){
+Route::get('saludar', function () {
     return 'Hola mundo :D';
 });
 
@@ -156,7 +165,7 @@ Route::get('test/{otro}', function($otro){
 */
 
 // personalizando la lógica
-Route::get('bikes/chollos/{precio}', function($precio){
+Route::get('bikes/chollos/{precio}', function ($precio) {
     // precio contendrá una lista de motos de precio
     //inferior o igual al recibido por parámetro
     //la lógica s eencuentra en el proveedor de servicios RouteServiceProvider
@@ -165,19 +174,19 @@ Route::get('bikes/chollos/{precio}', function($precio){
 });
 
 //prefijos para agrupar middleware
-Route::prefix('admin')->group(function(){
+Route::prefix('admin')->group(function () {
     // he definido las rutas de la prueba con clausaras, evidentemente
     //podría haber indicado controlador y método
-    Route::get('bikes', function(){
+    Route::get('bikes', function () {
         return "Estás en admin/bikes, método GET";
     });
-    Route::post('bikes', function(){
+    Route::post('bikes', function () {
         return "Estás en admin/bikes, método POST";
     });
-    Route::put('bikes', function(){
+    Route::put('bikes', function () {
         return "Estás en admin/bikes, método PUT";
     });
-    Route::delete('bikes', function(){
+    Route::delete('bikes', function () {
         return "Estás en admin/bikes, método DELETE";
     });
 });
@@ -193,7 +202,7 @@ Route::get('test', function(){
     ];
 });*/
 
-Route::get('\bikes', function(){
+Route::get('\bikes', function () {
     // retorna la lista completa de motos
     return Bike::all();
 });
