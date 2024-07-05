@@ -75,14 +75,23 @@ class BikeController extends Controller
      */
     public function store(Request $request)
     {
-        //validación de datos de entrada mediante validator
-        $request->validate([
+        //validación de datos de entrada mediante validator, 2 formas de hacerlo son:
+        /*$request->validate([
             'marca' => 'required|max:255',
             'modelo' => 'required|max:255',
             'precio' => 'required|numeric',
             'kms' => 'required|integer',
             'matriculada' => 'sometimes',
             'imagen' => 'sometimes|file|image|mimes:jpg,png,gif,webp|max:2048'
+        ]);*/
+        //validación de datos de entrada mediante validator
+        $this->validate($request,   [
+            'marca' => 'required|max:255',
+            'modelo' => 'required|max:255',
+            'precio' => 'required|numeric|min:0',
+            'kms' => 'required|integer|min:0',
+            'matriculada' => 'sometimes',
+            'imagen' => 'sometimes|file|image|mimes:jpg,png,gif,webp|max:4096'
         ]);
 
         // recuperar datos del forumlario excepto la imagen
@@ -191,18 +200,18 @@ class BikeController extends Controller
             'matriculada' => 'sometimes',
             'imagen' => 'sometimes|file|image|mimes:jpg,png,gif,webp|max:4096'
         ]);
-        
+
         // toma los datos del formulario
         $datos = $request->only('marca', 'modelo', 'kms', 'precio');
 
         // mira si llega el chekbox y pone 1 o 0 dependiendo de si llega o no
-        $datos += $request->has('matriculada') ? ['matriculada'=>1] : ['matriculada'=>0];
+        $datos += $request->has('matriculada') ? ['matriculada' => 1] : ['matriculada' => 0];
 
         // si llega una nueva imagen..
         if ($request->hasFile('imagen')) {
             // marca la imagen antigua para ser borrada si el update va bien
-            if($bike->imagen)
-                $aBorrar = config('filesystems.bikesImageDir').'/'.$bike->imagen;
+            if ($bike->imagen)
+                $aBorrar = config('filesystems.bikesImageDir') . '/' . $bike->imagen;
 
             // sube la imagen al directorio indicado en el fichero de config
             $imagenNueva = $request->file('imagen')->store(config('filesystems.bikesImageDir'));
@@ -210,19 +219,19 @@ class BikeController extends Controller
             // nos quedamos solo con el nombre del fichero para añadirlo a la BDD
             $datos['imagen'] = pathinfo($imagenNueva, PATHINFO_BASENAME);
         }
-        
+
         // en caso de que nos pidan eliminar la imagen
-        if ($request->filled('eliminarimagen') && $bike->imagen){
+        if ($request->filled('eliminarimagen') && $bike->imagen) {
             $datos['imagen'] = NULL;
-            $aBorrar = config('filesystems.bikesImageDir').'/'.$bike->imagen;
+            $aBorrar = config('filesystems.bikesImageDir') . '/' . $bike->imagen;
         }
 
         // al actualizar debemos tener en cuenta varias cosas
-        if ($bike->update($datos)){
-            if(isset($aBorrar))
+        if ($bike->update($datos)) {
+            if (isset($aBorrar))
                 Storage::delete($aBorrar);
-        }else{
-            if(isset($imagenNueva))
+        } else {
+            if (isset($imagenNueva))
                 Storage::delete($imagenNueva);
         }
 
