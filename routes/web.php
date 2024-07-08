@@ -7,7 +7,7 @@ use App\Http\Controllers\WelcomeController;
 use App\Http\Controllers\ContactoController;
 use Illuminate\Http\Request;
 use App\Models\Bike;
-
+use Illuminate\Support\Facades\Auth;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -19,12 +19,19 @@ use App\Models\Bike;
 |
 */
 
+Auth::routes(['verify' => true]);
+
+Route::post('/email/verification-notification', function (Request $request) {
+    $request->user()->sendEmailVerificationNotification();
+    return back()->with('message', 'Verification link sent!');
+})->middleware(['auth', 'throttle:6,1'])->name('verification.send');
+
 Route::get('/', [WelcomeController::class, 'index'])->name('welcome');
 
 
 // Probando ruta patata para que me lleve al welcomecontroller
 
-Route::get('patata', [WelcomeController::class, 'index'])->name('welcome');
+//Route::get('patata', [WelcomeController::class, 'index'])->name('welcome');
 
 // ruta para el formulario de contacto
 Route::get('/contacto', [ContactoController::class, 'index'])
@@ -61,9 +68,9 @@ Route::get('/test', function(){
 });*/
 
 //ZONA PARA PRUEBAS (borrar al finalizar)
-Route::get('saludar', function () {
+/*Route::get('saludar', function () {
     return 'Hola mundo :D';
-});
+});*/
 
 /*Route::match(['PUt', 'DELETE'], 'test', function(Request $request){
     return 'Estás haciendo la prueba por '.$request->getMethod();
@@ -163,7 +170,7 @@ Route::get('test/{otro}', function($otro){
     return "$otro no es número ni un DNI.";
     });
 */
-
+/*
 // personalizando la lógica
 Route::get('bikes/chollos/{precio}', function ($precio) {
     // precio contendrá una lista de motos de precio
@@ -189,7 +196,7 @@ Route::prefix('admin')->group(function () {
     Route::delete('bikes', function () {
         return "Estás en admin/bikes, método DELETE";
     });
-});
+});*/
 /*
 Route::get('test', function(){
     //retorna un array que convertirá en un Response JSON completa
@@ -201,11 +208,11 @@ Route::get('test', function(){
         'dorsal' => 32
     ];
 });*/
-
+/*
 Route::get('\bikes', function () {
     // retorna la lista completa de motos
     return Bike::all();
-});
+});*/
 
 /*
 Route::get('test', function(){
@@ -269,3 +276,6 @@ Route::get('test', function(){
         ['Content-type' => 'image/png']
     );
 });*/
+
+
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

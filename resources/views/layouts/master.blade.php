@@ -9,41 +9,96 @@
 
     <!-- CSS para Bootstrap -->
     <link rel="stylesheet" type="text/css" href="{{asset('css/bootstrap.min.css')}}">
+    <script src="{{(asset('js/bootstrap.bundle.js'))}}"></script>
 </head>
 
 <body class="container p-3">
-
     <!-- PARTE SUPERIOR -->
     @section('navegacion')
-    <!-- @php($pagina = $pagina ?? '') --> 
+    <!-- @php($pagina = $pagina ?? '') -->
     @php($pagina = Route::currentRouteName())
+    <div id="app">
+        <div class="container">
+            <h2 class="navbar-brand" href="{{ url('/') }}">
+                {{ config('app.name', 'Laravel') }}
+            </h2>
+        </div>
+        <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <!-- Left Side Of Navbar -->
+                <ul class="navbar-nav me-auto">
+                    <div class="container">
+                        <ul class="nav nav-pills my-3">
+                            <li class="nav-item mr-2">
+                                <a class="nav-link {{$pagina =='portada'? 'active' : ''}}" href="{{route('welcome')}}">Inicio</a>
+                            </li>
+                            <li class="nav-item mr-2">
+                                <a class="nav-link {{$pagina == 'bikes.index' ||
+                                    $pagina == 'bikes.search'? 'active':''}}" href="{{route('bikes.index')}}">Garaje</a>
+                            </li>
+                            <li class="nav-item mr-2">
+                                <a class="nav-link {{$pagina == 'contacto'? 'active':''}}" href="{{route('contacto')}}">Contacto</a>
+                            </li>
+                            @guest
+                            <li class="nav-item mr-2">
+                                <a class="nav-link {{$pagina == 'register'? 'active':''}}" href="{{route('register')}}">Registro</a>
+                            </li>
+                            @endguest
 
-    <nav>
-        <ul class="nav nav-pills my-3">
-            <li class="nav-item mr-2">
-                <a class="nav-link {{$pagina =='portada'? 'active' : ''}}" 
-                    href="{{route('welcome')}}">Inicio</a>
-            </li>
-            <li class="nav-item mr-2">
-                <a class="nav-link {{$pagina == 'bikes.index' ||
-                                    $pagina == 'bikes.search'? 'active':''}}"
-                    href="{{route('bikes.index')}}">Garaje</a>
-            </li>
-            <li class="nav-item mr-2">
-                <a class="nav-link {{$pagina == 'contacto'? 'active':''}}"
-                href="{{route('contacto')}}">Contacto</a>
-            </li>
-            <li class="nav-item mr-2">
-                <!--<a class="nav-link {{$pagina =='bikes.create'? 'active':''}}" 
-                    href="{{route('bikes.create')}}">Nueva moto</a>-->
-                    <!-- Uso del helper action, nos permite generar una URL directamente a partir
-                     de un método de controlador, si hay que indicar parametros en la ruta, podemos indicarlos
-                     con un array como segundo parametro: action([...],['bike' => 1]); -->
-                    <a class="nav-link {{$pagina =='bikes.create'? 'active':''}}" 
-                    href="{{action([App\Http\Controllers\BikeController::class, 'create'])}}">Nueva moto</a>
-            </li>
-        </ul>
+                            @auth
+                                <li class="nav-item mr-2">
+                                    <a class="nav-link {{$pagina == 'home'? 'active':''}}" 
+                                        href="{{route('home')}}">Mis motos</a>
+                                </li>
+                                <li class="nav-item mr-2">
+                                    <a class="nav-link {{$pagina =='bikes.create'? 'active':''}}" 
+                                        href="{{action([App\Http\Controllers\BikeController::class, 'create'])}}">Nueva moto</a>
+                                </li>
+                            @endauth
+                        </ul>
+                    </div>
+                </ul>
+                <!-- Right Side Of Navbar -->
+                <ul class="navbar-nav ms-auto">
+                    <!-- Authentication Links -->
+                    @guest
+                    @if (Route::has('login'))
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('login') }}">{{ __('Login') }}</a>
+                    </li>
+                    @endif
+
+                    @if (Route::has('register'))
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('register') }}">{{ __('Register') }}</a>
+                    </li>
+                    @endif
+                    @else
+                    <li class="nav-item dropdown">
+                        <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+                            {{ Auth::user()->name }} ({{ Auth::user()->email}})
+                        </a>
+
+                        <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                            <a class="dropdown-item" href="{{ route('logout') }}" onclick="event.preventDefault();
+                                                    document.getElementById('logout-form').submit();">
+                                {{ __('Logout') }}
+                            </a>
+
+                            <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                                @csrf
+                            </form>
+                        </div>
+                    </li>
+                    @endguest
+                </ul>
+            </div>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+    </div>
     </nav>
+    </div>
     @show
 
     <!-- PARTE CENTRAL -->
@@ -53,31 +108,31 @@
         <h2>@yield('titulo')</h2>
 
         @if(Session::has('success'))
-        <x-alert type="success" message="{{ Session::get('success') }}"/>
+        <x-alert type="success" message="{{ Session::get('success') }}" />
         @endif
 
         @if($errors->any())
         <x-alert type="danger" message="Se han producido errores:">
             <ul>
                 @foreach($errors->all() as $error)
-                    <li>{{ $error }}</li>
+                <li>{{ $error }}</li>
                 @endforeach
             </ul>
         </x-alert>
         @endif
-        
+
         <!-- Probando el nuevo componente -->
         <!--<x-alert type="success" message="Pasando información al componente">
             <p>Hay otro mensaje:</p>
         </x-alert>-->
-        
+
         <p>Contamos con un catálogo de {{$total}} motos.</p>
 
         @yield('contenido')
         <div class="d-flex justify-content-center">
             <div class="btn-group" role="group" aria-label="links">
                 @section('enlaces')
-                <a href="{{url()->previous()}}" class="btn btn-primary m-2">Atrás</a> 
+                <a href="{{url()->previous()}}" class="btn btn-primary m-2">Atrás</a>
                 <a href="{{ route('welcome') }}" class="btn btn-primary m-2">Inicio</a>
                 @show
             </div>

@@ -10,6 +10,14 @@ use Illuminate\Support\Facades\Storage;
 
 class BikeController extends Controller
 {
+    //constructor
+    public function __construct(){
+        //ponemos el middleware auth a todos los métodos excepto:
+        // - lista de motos
+        // --detalles de moto
+        // - búsqueda de motos
+        $this->middleware('auth')->except('index', 'show', 'search');
+    }
     /**
      * Display a listing of the resource.
      *
