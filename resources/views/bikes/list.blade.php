@@ -25,7 +25,9 @@
     <div class="row">
         <div class="col-6 text-start">{{ $bikes->links() }}</div>
         <div class="col-6 text-end">
+            @auth
             <p>Nueva moto <a href="{{route('bikes.create')}}" class="btn btn-success ml-2">+</a></p>
+            @endauth
         </div>
     </div>
     <table class="table table-striped table-bordered">
@@ -53,10 +55,13 @@
             <td class="text-center">
                 <a href="{{route('bikes.show', $bike->id)}}">
                     <img height="20" width="20" alt="Ver detalles" title="Ver detalles" src="{{asset('images/buttons/show.svg')}}"></a>
+                
+                @auth
                 <a href="{{route('bikes.edit', $bike->id)}}">
                     <img height="20" width="20" alt="Modificar" title="Modificar" src="{{asset('images/buttons/edit.svg')}}"></a>
                 <a href="{{route('bikes.delete', $bike->id)}}">
                     <img height="20" width="20" alt="Borrar" title="Borrar" src="{{asset('images/buttons/delete.svg')}}"></a>
+                @endauth
             </td>
         </tr>
         @endforeach

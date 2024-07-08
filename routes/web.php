@@ -269,3 +269,6 @@ Route::get('test', function(){
         ['Content-type' => 'image/png']
     );
 });*/
+Auth::routes();
+
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

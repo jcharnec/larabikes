@@ -11,7 +11,7 @@ class ContactoController extends Controller
     public function index(){
         return view('contacto');
     }
-
+    /*
     public function send(Request $request){
         $mensaje = new \stdClass();
         $mensaje->asunto = $request->asunto;
@@ -25,7 +25,7 @@ class ContactoController extends Controller
             ->route('welcome')
             ->with('success', 'Mensaje enviado correctamente');
     }
-
+    */
     public function send(Request $request){
         $request->validate([
             'email' => 'required|email:rfc',
