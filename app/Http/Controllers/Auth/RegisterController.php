@@ -29,7 +29,11 @@ class RegisterController extends Controller
      *
      * @var string
      */
+<<<<<<< HEAD
     protected $redirectTo = 'email/verify';
+=======
+    protected $redirectTo = RouteServiceProvider::HOME;
+>>>>>>> 4af95217f3ccd875b6e0aca51c59afc19648210b
 
     /**
      * Create a new controller instance.
@@ -53,9 +57,12 @@ class RegisterController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
+<<<<<<< HEAD
             'population' => ['required', 'string', 'max:255'],
             'postal_code' => ['required', 'string', 'max:10'],
             'birthdate' => ['required', 'date'],
+=======
+>>>>>>> 4af95217f3ccd875b6e0aca51c59afc19648210b
         ]);
     }
 
@@ -71,9 +78,12 @@ class RegisterController extends Controller
             'name' => $data['name'],
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
+<<<<<<< HEAD
             'population' => $data['population'],
             'postal_code' => $data['postal_code'],
             'birthdate' => $data['birthdate'],
+=======
+>>>>>>> 4af95217f3ccd875b6e0aca51c59afc19648210b
         ]);
     }
 }

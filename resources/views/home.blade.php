@@ -4,6 +4,7 @@
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-8">
+<<<<<<< HEAD
             @if (Auth::user()->email_verified_at === null)
             <div class="alert alert-warning" role="alert">
                 {{ __('Antes de continuar, por favor, confirme su correo electrónico que le fue enviado. Si no ha recibido el correo electrónico, haga clic aquí para solicitar otro.') }}
@@ -13,6 +14,8 @@
                 </form>
             </div>
             @endif
+=======
+>>>>>>> 4af95217f3ccd875b6e0aca51c59afc19648210b
             <div class="card">
                 <div class="card-header">{{ __('Mi perfil') }}</div>
 
@@ -29,6 +32,7 @@
                         <p>Nombre: {{ $users->name }}</p>
                         <p>Correo: {{ $users->email }}</p>
                         <p>Fecha de registro: {{ $users->created_at }}</p>
+<<<<<<< HEAD
                         <p>Poblacion: {{ $users->population }}</p>
                         <p>Codigo postal: {{ $users->postal_code }}</p>
                         <p>Fecha de nacimiento: {{ $users->birthdate }}</p>
@@ -76,3 +80,12 @@
     </div>
 </div>
 @endsection
+=======
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@endsection
+>>>>>>> 4af95217f3ccd875b6e0aca51c59afc19648210b
