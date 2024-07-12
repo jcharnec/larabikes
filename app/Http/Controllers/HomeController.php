@@ -3,11 +3,10 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-<<<<<<< HEAD
 use App\Models\Bike;
-=======
->>>>>>> 4af95217f3ccd875b6e0aca51c59afc19648210b
 use Illuminate\Support\Facades\Auth;
+use App\Models\User;
+use Illuminate\Database\Eloquent\Model;
 
 class HomeController extends Controller
 {
@@ -18,10 +17,6 @@ class HomeController extends Controller
      */
     public function __construct()
     {
-<<<<<<< HEAD
-        //$this->middleware(['auth', 'verified']);
-=======
->>>>>>> 4af95217f3ccd875b6e0aca51c59afc19648210b
         $this->middleware('auth');
     }
 
@@ -32,18 +27,15 @@ class HomeController extends Controller
      */
     public function index()
     {
-        // Obtén el usuario autenticado
         $user = Auth::user();
-
-<<<<<<< HEAD
-        $bikes = bike::paginate(10);
+        $bikes = $user->bikes()->paginate(10);
+        $deleteBikes = $user->bikes()->onlyTrashed()->get();
 
         return view('home', [
             'users' => $user,
             'bikes' => $bikes,
+            'deleteBikes' => $deleteBikes,
         ]);
-=======
-        return view('home', ['users' => $user]);
->>>>>>> 4af95217f3ccd875b6e0aca51c59afc19648210b
     }
 }
+

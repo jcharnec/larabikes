@@ -52,8 +52,19 @@ Route::resource('bikes', BikeController::class);
 // formulario de confirmación de eliminacion
 Route::get('bikes/{bike}/delete', [BikeController::class, 'delete'])
     ->name('bikes.delete')
-    ->middleware('throttle:3,1'); //max 3 peticiones por cada 1 min
+    ->middleware('throttle:8,1'); //max 3 peticiones por cada 1 min
 //->middleware('adult:21');
+
+//eliminación definitiva de la moto
+//va por DELETE por vario motivos:
+// - coherencia con las operaciones del delete en Laravel
+// - evitar los borrados accidentales
+Route::delete('/bikes/purge', [BikeController::class, 'purge'])
+        ->name('bikes.purge');
+
+//restauración de la moto
+Route::get('/bikes/{bike}/restore', [BikeController::class, 'restore'])
+        ->name('bikes.restore');
 
 
 
@@ -276,10 +287,5 @@ Route::get('test', function(){
         ['Content-type' => 'image/png']
     );
 });*/
-<<<<<<< HEAD
-
-=======
-Auth::routes();
->>>>>>> 4af95217f3ccd875b6e0aca51c59afc19648210b
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

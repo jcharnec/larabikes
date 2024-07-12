@@ -4,7 +4,6 @@
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-8">
-<<<<<<< HEAD
             @if (Auth::user()->email_verified_at === null)
             <div class="alert alert-warning" role="alert">
                 {{ __('Antes de continuar, por favor, confirme su correo electrónico que le fue enviado. Si no ha recibido el correo electrónico, haga clic aquí para solicitar otro.') }}
@@ -14,8 +13,6 @@
                 </form>
             </div>
             @endif
-=======
->>>>>>> 4af95217f3ccd875b6e0aca51c59afc19648210b
             <div class="card">
                 <div class="card-header">{{ __('Mi perfil') }}</div>
 
@@ -32,14 +29,13 @@
                         <p>Nombre: {{ $users->name }}</p>
                         <p>Correo: {{ $users->email }}</p>
                         <p>Fecha de registro: {{ $users->created_at }}</p>
-<<<<<<< HEAD
                         <p>Poblacion: {{ $users->population }}</p>
                         <p>Codigo postal: {{ $users->postal_code }}</p>
                         <p>Fecha de nacimiento: {{ $users->birthdate }}</p>
                     </div>
                 </div>
             </div>
-            <h2>Bicicletas de {{ $users->name }}</h2>
+            <h3>Motos de {{ $users->name }}</h3>
             <table class="table table-striped table-bordered">
                 <tr>
                     <th>ID</th>
@@ -76,16 +72,53 @@
                     <td colspan="4">Mostrando {{sizeof($bikes)}} de {{$bikes->total()}}.</td>
                 </tr>
             </table>
+            @if(count($deleteBikes))
+            <h3>Motos borradas de {{ $users->name }}</h3>
+            <table class="table table-striped table-bordered">
+                <tr>
+                    <th>ID</th>
+                    <th>Imagen</th>
+                    <th>Marca</th>
+                    <th>Modelo</th>
+                    <th>Matrículada</th>
+                    <th></th>
+                    <th></th>
+                </tr>
+                @foreach($deleteBikes as $bike)
+                <tr>
+                    <td><b>#{{$bike->id}}</b></td>
+                    <td class="text-center" style="max-width: 80px">
+                        <img class="rounded" style="max-width: 80%" 
+                        alt="Imagen de {{$bike->marca}} {{$bike->modelo}}" 
+                        title="Imagen de {{$bike->marca}} {{$bike->modelo}}" 
+                        src="{{$bike->imagen?
+                        asset('storage/'.config('filesystems.bikesImageDir')).'/'.$bike->imagen:
+                        asset('storage/'.config('filesystems.bikesImageDir')).'/default.jpg'}}">
+                    </td>
+                    <td>{{$bike->marca}}</td>
+                    <td>{{$bike->modelo}}</td>
+                    <td>{{$bike->matriculada}}</td>
+                    <td class="text-center">
+                        <a href="{{route('bikes.restore', $bike->id)}}">
+                            <button class="btn btn-success">Restaurar</button>
+                        </a>
+                    </td>
+                    <td class="text-center">
+                        <from method="POST" action="{{route('bikes.purge')}}">
+                            @csrf
+                            <input type="hidden" name="_method" value="DELETE">
+                            <input type="hidden" name="bike_id" value="{{$bike->id}}">
+                            <input type="submit" alt="Borrar" title="Eliminar" class="btn btn-danger" value="Eliminar">
+                        </from>
+                    </td>
+                </tr>
+                @endforeach
+                <tr>
+                    <td colspan="4">Mostrando {{sizeof($bikes)}} de {{$bikes->total()}}.</td>
+                </tr>
+            </table>
+            @endif
         </div>
     </div>
 </div>
 @endsection
-=======
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-@endsection
->>>>>>> 4af95217f3ccd875b6e0aca51c59afc19648210b
