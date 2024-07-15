@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use App\Models\User;
 use App\Models\Bike;
+use App\Modes\Role;
 
 class DatabaseSeeder extends Seeder
 {
@@ -18,9 +19,12 @@ class DatabaseSeeder extends Seeder
         $this->call([
             RoleSeeder::class,
             BikesSeeder::class,
-            RoleUserSeeder::class,
         ]);
         
         User::factory(50)->create();
+
+        $this->call([
+            RoleUserSeeder::class,
+        ]);
     }
 }

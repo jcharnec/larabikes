@@ -15,16 +15,16 @@ class RoleUserSeeder extends Seeder
      */
     public function run()
     {
-        // Obtén todos los usuarios y roles
         $users = User::all();
         $roles = Role::all();
 
-        // Asigna roles aleatoriamente a cada usuario
         foreach ($users as $user) {
-            // Asigna entre 1 y 3 roles aleatoriamente a cada usuario
-            $user->roles()->attach(
-                $roles->random(rand(1, 3))->pluck('id')->toArray()
-            );
+            $roleIds = $roles->random(rand(1, 3))->pluck('id')->toArray();
+            $user->roles()->attach($roleIds);
+
+            // Depuración
+            echo "Assigned roles " . implode(', ', $roleIds) . " to user " . $user->id . "\n";
         }
     }
 }
+
