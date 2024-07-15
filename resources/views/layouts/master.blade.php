@@ -102,6 +102,7 @@
     @show
 
     <!-- PARTE CENTRAL -->
+    @includeWhen($errors->any(), 'layout.error')
     <h1 class="my-2">Primer ejempo de CRUD con Laravel</h1>
 
     <main>

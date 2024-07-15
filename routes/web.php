@@ -43,7 +43,18 @@ Route::post('/contacto', [ContactoController::class, 'send'])
 // para buscar motos por marca y/o modelo
 Route::match(['GET', 'POST'], 'bike/search', [BikeController::class, 'search'])
     ->name('bikes.search');
+
 //->middleware('adult:13');
+//eliminación definitiva de la moto
+//va por DELETE por vario motivos:
+// - coherencia con las operaciones del delete en Laravel
+// - evitar los borrados accidentales
+Route::delete('/bikes/purge', [BikeController::class, 'purge'])
+        ->name('bikes.purge');
+
+//restauración de la moto
+Route::post('/bikes/{bike}/restore', [BikeController::class, 'restore'])
+        ->name('bikes.restore');
 
 // CRUD de motos
 Route::resource('bikes', BikeController::class);
@@ -55,16 +66,7 @@ Route::get('bikes/{bike}/delete', [BikeController::class, 'delete'])
     ->middleware('throttle:8,1'); //max 3 peticiones por cada 1 min
 //->middleware('adult:21');
 
-//eliminación definitiva de la moto
-//va por DELETE por vario motivos:
-// - coherencia con las operaciones del delete en Laravel
-// - evitar los borrados accidentales
-Route::delete('/bikes/purge', [BikeController::class, 'purge'])
-        ->name('bikes.purge');
 
-//restauración de la moto
-Route::get('/bikes/{bike}/restore', [BikeController::class, 'restore'])
-        ->name('bikes.restore');
 
 
 

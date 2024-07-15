@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\Request;
 use App\Models\Bike;
 use Illuminate\Support\Facades\Cookie;
@@ -87,17 +88,23 @@ class BikeController extends Controller
     public function store(Request $request)
     {
         //validación de datos de entrada mediante validator
-        $this->validate($request,   [
-            'marca' => 'required|max:255',
+        $request->validate([
+            'marca' => ['required','max:255', new \App\Rules\Mayusculas()],
             'modelo' => 'required|max:255',
             'precio' => 'required|numeric|min:0',
             'kms' => 'required|integer|min:0',
-            'matriculada' => 'sometimes',
+            'matriculada' => 'required_with:matricula',
+            'matricula' => ['required_if:matriculada,1|
+                            nullable|
+                            regex:/^\d{4}[B-Z]{3}$/i|
+                            unique:bikes, matricula, $bike->id'],
+            'color' => 'nullable|regex:/^#[\dA-F]{6}$/i',
             'imagen' => 'sometimes|file|image|mimes:jpg,png,gif,webp|max:4096'
         ]);
 
         // recuperar datos del forumlario excepto la imagen
-        $datos = $request->only(['marca', 'modelo', 'precio', 'kms', 'matriculada', 'user_id']);
+        $datos = $request->only(['marca', 'modelo', 'precio', 'kms', 'matriculada', 
+                                'user_id', 'matricula', 'color']);
 
         //el valor por defecto para la imagen será NULL
         $datos += ['imagen' => NULL];
@@ -163,12 +170,23 @@ class BikeController extends Controller
             'modelo' => 'required|max:255',
             'precio' => 'required|numeric',
             'kms' => 'required|integer',
-            'matriculada' => 'sometimes',
+            'matriculada' => 'required_with:matricula',
+            'matricula' => ['required_if:matriculada,1|
+                            nullable|
+                            regex:/^\d{4}[B-Z]{3}$/i|
+                            unique:bikes|
+                            confirmed'],
+            'color' => 'nullable|regex:/^#[\dA-F]{6}$/i',                
             'imagen' => 'sometimes|file|image|mimes:jpg,png,gif,webp|max:4096'
         ]);
 
         // toma los datos del formulario
         $datos = $request->only('marca', 'modelo', 'kms', 'precio');
+
+        //estos datos no se pueden tomar directamente
+        $datos['matriculada'] = $request->has('matriculada') ? 1 : 0;
+        $datos['matricula'] = $request->has('matriculada')? $request->input('matricula') : NULL;
+        $datos['color'] = $request->input('color') ?? NULL;
 
         // mira si llega el chekbox y pone 1 o 0 dependiendo de si llega o no
         $datos += $request->has('matriculada') ? ['matriculada' => 1] : ['matriculada' => 0];
@@ -262,7 +280,43 @@ class BikeController extends Controller
         $bike->delete(); //soft delete (no podemos borrar la imagen aún)
 
         //redirige a la lista de motos
-        return redirect('bikes.index')
+        return redirect()->route('bikes.index')
             ->with('success', "Moto $bike->marca $bike->modelo eliminada");
+    }
+
+    public function restore(Request $request, int $id)
+    {
+        dd($id);
+        //recuperar la moto borrada
+        $bike = Bike::withTrashed()->findOrFail($id);
+
+        if ($request->user()->cant('restore', $bike))
+            throw new AuthorizationException('No tienes permiso');
+
+        $bike->restore();
+
+        return back()->with(
+            'success',
+            "Moto $bike->marca $bike->modelo restaurada correctamente."
+        );
+    }
+
+    public function purge(Request $request){
+        //recuperar la moto borrada
+        $bike = Bike::withTrashed()->findOrFail($request->input('bike_id'));
+
+        //comprobar los permisos mediante la policy
+        if ($request->user()->cant('delete', $bike))
+            throw new AuthorizationException('No tienes permiso');
+
+        // si se consigue eliminar definitivamente la moto y ésta tiene foto...
+        if($bike->forceDelete() && $bike->imagen)
+            // ... se elimina el fichero
+            Storage::delete(config('filesystems.bikesImageDir') . '/' . $bike->imagen);
+        
+        return back()->with(
+            'success',
+            "Moto $bike->marca $bike->modelo eliminada definitivamente."
+        );
     }
 }

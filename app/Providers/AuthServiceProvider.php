@@ -7,6 +7,7 @@ use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvid
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Support\Facades\Gate;
 
+
 class AuthServiceProvider extends ServiceProvider
 {
     /**
@@ -15,7 +16,7 @@ class AuthServiceProvider extends ServiceProvider
      * @var array
      */
     protected $policies = [
-         'App\Models\Bike' => 'App\Policies\BikePolicy',
+        'App\Models\Bike' => 'App\Policies\BikePolicy',
     ];
 
     /**

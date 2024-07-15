@@ -14,7 +14,7 @@ class Bike extends Model
     //campos de la BDD en los que se permite la asignación masiva
     protected $fillable = [
         'marca', 'modelo', 'kms', 'precio', 'imagen',
-        'user_id', 'matriculada'
+        'user_id', 'matriculada', 'matricula', 'color'
     ];
 
     public static function recent(int $number=1){

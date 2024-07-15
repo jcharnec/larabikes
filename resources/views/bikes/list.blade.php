@@ -36,6 +36,8 @@
             <th>Imagen</th>
             <th>Marca</th>
             <th>Modelo</th>
+            <th>Matrícula</th>
+            <th>Color</th>
             <th>Operaciones</th>
         </tr>
         @foreach($bikes as $bike)
@@ -52,6 +54,8 @@
             </td>
             <td>{{$bike->marca}}</td>
             <td>{{$bike->modelo}}</td>
+            <td>{{$bike->matricula}}</td>
+            <td style="background-color:{{ $bike->color }}">{{$bike->color}}</td>
             <td class="text-center">
                 <a href="{{route('bikes.show', $bike->id)}}">
                     <img height="20" width="20" alt="Ver detalles" title="Ver detalles" src="{{asset('images/buttons/show.svg')}}"></a>

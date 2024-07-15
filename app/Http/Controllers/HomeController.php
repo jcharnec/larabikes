@@ -25,11 +25,11 @@ class HomeController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function index()
+    public function index(Request $request)
     {
-        $user = Auth::user();
-        $bikes = $user->bikes()->paginate(10);
-        $deleteBikes = $user->bikes()->onlyTrashed()->get();
+        $user = $request->user();
+        $bikes = $request->user()->bikes()->paginate(config('pagination.bikes', 10));
+        $deleteBikes = $request->user()->bikes()->onlyTrashed()->get();
 
         return view('home', [
             'users' => $user,

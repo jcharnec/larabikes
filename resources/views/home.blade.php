@@ -42,6 +42,8 @@
                     <th>Imagen</th>
                     <th>Marca</th>
                     <th>Modelo</th>
+                    <th>Matricula</th>
+                    <th>Color</th>
                     <th>Operaciones</th>
                 </tr>
                 @foreach($bikes as $bike)
@@ -55,6 +57,8 @@
                     </td>
                     <td>{{$bike->marca}}</td>
                     <td>{{$bike->modelo}}</td>
+                    <td>{{$bike->matricula}}</td>
+                    <td style="background-color:{{$bike->color}}"></td>
                     <td class="text-center">
                         <a href="{{route('bikes.show', $bike->id)}}">
                             <img height="20" width="20" alt="Ver detalles" title="Ver detalles" src="{{asset('images/buttons/show.svg')}}"></a>
@@ -73,14 +77,15 @@
                 </tr>
             </table>
             @if(count($deleteBikes))
-            <h3>Motos borradas de {{ $users->name }}</h3>
+            <h3 class="mt-4">Motos borradas de {{ $users->name }}</h3>
             <table class="table table-striped table-bordered">
                 <tr>
                     <th>ID</th>
                     <th>Imagen</th>
                     <th>Marca</th>
                     <th>Modelo</th>
-                    <th>Matrículada</th>
+                    <td>Matricula</td>
+                    <td>Color</td>
                     <th></th>
                     <th></th>
                 </tr>
@@ -88,28 +93,30 @@
                 <tr>
                     <td><b>#{{$bike->id}}</b></td>
                     <td class="text-center" style="max-width: 80px">
-                        <img class="rounded" style="max-width: 80%" 
-                        alt="Imagen de {{$bike->marca}} {{$bike->modelo}}" 
-                        title="Imagen de {{$bike->marca}} {{$bike->modelo}}" 
-                        src="{{$bike->imagen?
+                        <img class="rounded" style="max-width: 80%" alt="Imagen de {{$bike->marca}} {{$bike->modelo}}" title="Imagen de {{$bike->marca}} {{$bike->modelo}}" src="{{$bike->imagen?
                         asset('storage/'.config('filesystems.bikesImageDir')).'/'.$bike->imagen:
                         asset('storage/'.config('filesystems.bikesImageDir')).'/default.jpg'}}">
                     </td>
                     <td>{{$bike->marca}}</td>
                     <td>{{$bike->modelo}}</td>
-                    <td>{{$bike->matriculada}}</td>
+                    <td>{{$bike->matricula}}</td>
+                    <td style="background-color:{{$bike->color}}">{{$bike->color}}</td>
                     <td class="text-center">
                         <a href="{{route('bikes.restore', $bike->id)}}">
                             <button class="btn btn-success">Restaurar</button>
                         </a>
                     </td>
                     <td class="text-center">
-                        <from method="POST" action="{{route('bikes.purge')}}">
+                        <a onclick='
+                            if(confirm("¿Estás seguro de que quieres borrar esta moto?"))
+                                this.nextElementSibling.submit();'>
+                            <button class="btn btn-danger">Eliminar</button>
+                        </a>
+                        <form method="POST" class="d-none" action="{{ route('bikes.purge') }}">
                             @csrf
                             <input type="hidden" name="_method" value="DELETE">
-                            <input type="hidden" name="bike_id" value="{{$bike->id}}">
-                            <input type="submit" alt="Borrar" title="Eliminar" class="btn btn-danger" value="Eliminar">
-                        </from>
+                            <input name="bike_id" type="hidden" value="{{ $bike->id }}">
+                        </form>
                     </td>
                 </tr>
                 @endforeach

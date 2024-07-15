@@ -7,28 +7,62 @@
             {{csrf_field()}}
             <input name="_method" type="hidden" value="PUT">
 
-            <div class="form-group row">
+            <div class="form-group row my-3">
                 <label for="inputMarca" class="col-sm col-form-label">Marca</label>
                 <input name="marca" value="{{old('marca', $bike->marca)}}" type="text" class="up form-control col-sm-10" id="inputMarca" placeholder="Marca" maxlength="255">
             </div>
-            <div class="form-group row">
+            <div class="form-group row my-3">
                 <label for="inputModelo" class="col-sm col-form-label">Modelo</label>
                 <input name="modelo" value="{{old('modelo', $bike->modelo)}}" type="text" class="up form-control col-sm-10" id="inputModelo" placeholder="Modelo" maxlength="255">
             </div>
-            <div class="form-group row">
+            <div class="form-group row my-3">
                 <label for="inputPrecio" class="col-sm col-form-label">Precio</label>
                 <input name="precio" value="{{old('precio', $bike->precio)}}" type="number" class="up form-control col-sm-10" id="inputPrecio" min="0" step="0.01">
             </div>
-            <div class="form-group row">
+            <div class="form-group row my-3">
                 <label for="inputKms" class="col-sm-2 col-form-label">Kms</label>
-                <input name="kms" value="{{old('kms', $bike->kms)}}" type="number" class="form-control col-sm-4" id="inputKms">
+                <input name="kms" value="{{old('kms', $bike->kms)}}" type="number" 
+                class="form-control col-sm-4" id="inputKms">
             </div>
-            <div class="form-group row">
-                <div class="form-check">
-                    <input name="matriculada" value="1" class="form-check-input" type="checkbox" {{$bike->matriculada? "checked":""}}>
-                    <label class="form-check-label">Matriculada</label>
+            <div class="form-group row my-3">
+                <div class="form-check col-sm-6">
+                    <input name="matriculada" value="1" class="form-check-input" 
+                    type="checkbox" id="chkMatriculada" {{$bike->matriculada? "checked":""}}>
+                    <label class="form-check-label" for="chkMatriculada">Matriculada</label>
+                </div>
+                <div class="form-check col-sm-6">
+                    <label for="inputMatricula" class="col-sm-2 form-label">Matrícula</label>
+                    <input name="matricula" type="text" class="up form-control"
+                        id="inputMatricula" maxleng="7" value="{{old('matricula', $bike->matricula)}}">
                 </div>
             </div>
+            <script>
+                inputMatricula.disabled = !chkMatriculada.checked;
+
+                chkMatriculada.onchange = function(){
+                    inputMatricula.disabled = !chkMatriculada.checked;
+                }
+            </script>
+
+            <div class="form-group row">
+                <div class="form-chek col-sm-6">
+                    <input type="checkbox" class="form-check-input"
+                        id="chkColor" {{$bike->color? 'checked':''}}>
+                    <label class="form-check-label">Indicar el color</label>
+                </div>
+                <div class="form-check col-sm-6">
+                    <label for="inputColor" class="col-sm-2 form-label">Color</label>
+                    <input name="color" type="color" class="up form-control form-control-color"
+                        id="inputColor" value="{{old('color', $bike->color ?? '#FFFFF')}}">
+                </div>
+            </div>
+            <script>
+                inputColor.disabled = !chkColor.checked;
+
+                chkColor.onchange =function(){
+                    inputColor.disabled = !chkColor.checked;
+                }
+            </script>
             <div class="form-group row my-3">
                 <div class="col-sm-9">
                     <label for="inputImagen" class="col-sm-2 col-form-label">
