@@ -15,7 +15,12 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
+        $this->call([
+            RoleSeeder::class,
+            BikesSeeder::class,
+            RoleUserSeeder::class,
+        ]);
+        
         User::factory(50)->create();
-        Bike::factory(200)->create();
     }
 }
