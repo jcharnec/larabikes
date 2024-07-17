@@ -54,6 +54,12 @@
                                     <a class="nav-link {{$pagina =='bikes.create'? 'active':''}}" 
                                         href="{{action([App\Http\Controllers\BikeController::class, 'create'])}}">Nueva moto</a>
                                 </li>
+                                @if(Auth::user()->hasRole('administrador'))
+                                    <li class="nav-item mr-2">
+                                        <a class="nav-link {{$pagina =='admin.deleted.bikes'? 'active':''}}"
+                                            href="{{route('admin.deleted.bikes')}}">Motos borradas</a>
+                                    </li>
+                                @endif
                             @endauth
                         </ul>
                     </div>
@@ -102,7 +108,7 @@
     @show
 
     <!-- PARTE CENTRAL -->
-    @includeWhen($errors->any(), 'layout.error')
+    <!-- @includeWhen($errors->any(), 'layouts.error') -->
     <h1 class="my-2">Primer ejempo de CRUD con Laravel</h1>
 
     <main>

@@ -16,4 +16,10 @@ class WelcomeController extends Controller
         // Pasar las motos a la vista
         return view('welcome', ['bikes' => $bikes]);
     }
+
+    public function showWelcome()
+    {
+        $bikes = Bike::take(4)->get();
+        return view('welcome', compact('bikes'));
+    }
 }

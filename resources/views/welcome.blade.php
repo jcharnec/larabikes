@@ -12,22 +12,33 @@
 @endsection
 
 @section('contenido')
+<style>
+    .bike-image {
+        width: 100%;
+        height: 250px; /* Ajusta esta altura según tus necesidades */
+        object-fit: cover; /* Esto asegurará que la imagen se recorte para llenar el contenedor */
+    }
+</style>
+
 <figure class="row mt-2 mb-2 col-10 offset-1">
     <img class="d-block w-100" alt="Moto de Caneda en Akira" src="{{ asset('images/bikes/bike0.png') }}">
 </figure>
 
 <div class="row mt-2 mb-2 col-10 offset-1">
-    @foreach ($bikes as $bike)
-        <div class="col-md-4">
-            <figure>
-                <img class="d-block w-100" alt="{{ $bike->marca }}" src="{{ asset('storage/images/bikes/' . $bike->imagen) }}">
-                <figcaption>{{ $bike->marca }}</figcaption>
-            </figure>
+    <div class="col-12">
+        <div class="row">
+            @foreach ($bikes->take(4) as $bike)
+                <div class="col-md-3">
+                    <figure>
+                        <img class="bike-image" alt="{{ $bike->marca }}" src="{{ asset('storage/images/bikes/' . $bike->imagen) }}">
+                        <figcaption>{{ $bike->marca }}</figcaption>
+                    </figure>
+                </div>
+            @endforeach
         </div>
-    @endforeach
+    </div>
 </div>
 @endsection
 
 @section('enlaces')
 @endsection
-

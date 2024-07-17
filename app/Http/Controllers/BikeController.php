@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\BikeDeleteRequest;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\Request;
 use App\Models\Bike;
@@ -11,6 +12,8 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Gate;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use App\Models\User;
+use App\Http\Requests\BikeRequest;
+use App\Http\Requests\BikeUpdateRequest;
 
 class BikeController extends Controller
 {
@@ -85,26 +88,14 @@ class BikeController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(BikeRequest $request)
     {
-        //validación de datos de entrada mediante validator
-        $request->validate([
-            'marca' => ['required','max:255', new \App\Rules\Mayusculas()],
-            'modelo' => 'required|max:255',
-            'precio' => 'required|numeric|min:0',
-            'kms' => 'required|integer|min:0',
-            'matriculada' => 'required_with:matricula',
-            'matricula' => ['required_if:matriculada,1|
-                            nullable|
-                            regex:/^\d{4}[B-Z]{3}$/i|
-                            unique:bikes, matricula, $bike->id'],
-            'color' => 'nullable|regex:/^#[\dA-F]{6}$/i',
-            'imagen' => 'sometimes|file|image|mimes:jpg,png,gif,webp|max:4096'
-        ]);
 
         // recuperar datos del forumlario excepto la imagen
-        $datos = $request->only(['marca', 'modelo', 'precio', 'kms', 'matriculada', 
-                                'user_id', 'matricula', 'color']);
+        $datos = $request->only([
+            'marca', 'modelo', 'precio', 'kms', 'matriculada',
+            'user_id', 'matricula', 'color'
+        ]);
 
         //el valor por defecto para la imagen será NULL
         $datos += ['imagen' => NULL];
@@ -149,7 +140,7 @@ class BikeController extends Controller
      * @param  Bike
      * @return \Illuminate\Http\Response
      */
-    public function edit(Bike $bike)
+    public function edit(BikeUpdateRequest $request, Bike $bike)
     {
         //carga la vista correspondiente y le pasa la moto
         return view('bikes.update')->with('bike', $bike);
@@ -162,30 +153,14 @@ class BikeController extends Controller
      * @param  Bike
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Bike $bike)
+    public function update(BikeUpdateRequest $request, Bike $bike)
     {
-        // validación de datos
-        $request->validate([
-            'marca' => 'required|max:255',
-            'modelo' => 'required|max:255',
-            'precio' => 'required|numeric',
-            'kms' => 'required|integer',
-            'matriculada' => 'required_with:matricula',
-            'matricula' => ['required_if:matriculada,1|
-                            nullable|
-                            regex:/^\d{4}[B-Z]{3}$/i|
-                            unique:bikes|
-                            confirmed'],
-            'color' => 'nullable|regex:/^#[\dA-F]{6}$/i',                
-            'imagen' => 'sometimes|file|image|mimes:jpg,png,gif,webp|max:4096'
-        ]);
-
         // toma los datos del formulario
-        $datos = $request->only('marca', 'modelo', 'kms', 'precio');
+        $datos = $request->only('marca', 'modelo', 'kms', 'precio', 'user_id');
 
         //estos datos no se pueden tomar directamente
         $datos['matriculada'] = $request->has('matriculada') ? 1 : 0;
-        $datos['matricula'] = $request->has('matriculada')? $request->input('matricula') : NULL;
+        $datos['matricula'] = $request->has('matriculada') ? $request->input('matricula') : NULL;
         $datos['color'] = $request->input('color') ?? NULL;
 
         // mira si llega el chekbox y pone 1 o 0 dependiendo de si llega o no
@@ -209,10 +184,6 @@ class BikeController extends Controller
             $datos['imagen'] = NULL;
             $aBorrar = config('filesystems.bikesImageDir') . '/' . $bike->imagen;
         }
-
-        // autorización mediante policy
-        if ($request->user()->cant('update', $bike))
-            abort(401, 'No puedes borrar una moto que no es tuya');
 
         // al actualizar debemos tener en cuenta varias cosas
         if ($bike->update($datos)) {
@@ -240,18 +211,8 @@ class BikeController extends Controller
      * @param Bike
      * @return \Illuminate\Http\Response
      */
-    public function delete(Request $request, Bike $bike)
+    public function delete(BikeDeleteRequest $request, Bike $bike)
     {
-        // autorización mediante gate
-        // (luego lo borraremos para hacelo por policies)
-        /*if(Gate::denies('borrarMoto', $bike))
-            abort(401, 'No puedes borrar una moto que no es tuya');*/
-
-        // autorización mediante policy
-        if ($request->user()->cant('delete', $bike)) {
-            throw new HttpException(401, 'No puedes borrar una moto que no es tuya');
-        }
-
         // muestra la vista de confirmación de eliminación
         return view('bikes.delete', ['bike' => $bike]);
     }
@@ -301,7 +262,8 @@ class BikeController extends Controller
         );
     }
 
-    public function purge(Request $request){
+    public function purge(Request $request)
+    {
         //recuperar la moto borrada
         $bike = Bike::withTrashed()->findOrFail($request->input('bike_id'));
 
@@ -310,10 +272,10 @@ class BikeController extends Controller
             throw new AuthorizationException('No tienes permiso');
 
         // si se consigue eliminar definitivamente la moto y ésta tiene foto...
-        if($bike->forceDelete() && $bike->imagen)
+        if ($bike->forceDelete() && $bike->imagen)
             // ... se elimina el fichero
             Storage::delete(config('filesystems.bikesImageDir') . '/' . $bike->imagen);
-        
+
         return back()->with(
             'success',
             "Moto $bike->marca $bike->modelo eliminada definitivamente."

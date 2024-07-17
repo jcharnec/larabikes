@@ -8,6 +8,8 @@ use App\Http\Controllers\ContactoController;
 use Illuminate\Http\Request;
 use App\Models\Bike;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\AdminController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -18,6 +20,13 @@ use Illuminate\Support\Facades\Auth;
 | contains the "web" middleware group. Now create something great!
 |
 */
+//grupo de rutas solamente para el administrador
+//llevarán el prefijo 'admin'
+Route::prefix('admin')->middleware('auth', 'is_admin')->group(function (){
+    //ver las motos eliminadas (/admin/deletedbikes)
+    Route::get('deletedbikes', [AdminController::class, 'deletedbikes'])
+            ->name('admin.deleted.bikes');
+});
 
 Auth::routes(['verify' => true]);
 
@@ -43,8 +52,9 @@ Route::post('/contacto', [ContactoController::class, 'send'])
 // para buscar motos por marca y/o modelo
 Route::match(['GET', 'POST'], 'bike/search', [BikeController::class, 'search'])
     ->name('bikes.search');
-
 //->middleware('adult:13');
+
+
 //eliminación definitiva de la moto
 //va por DELETE por vario motivos:
 // - coherencia con las operaciones del delete en Laravel

@@ -47,7 +47,7 @@
             inputMatricula.disable = !chkMatriculada.checked;
             confirmMatricula.disable = !chkMatriculada.checked;
 
-            chkMatricula.onchange = function (){
+            chkMatriculada.onchange = function (){
                 inputMatricula.disable = !chkMatriculada.checked;
                 confirmMatricula.disable = !chkMatriculada.checked;
             }
@@ -55,19 +55,19 @@
         <div class="form-group row">
             <div class="form-check col-sm-6">
                 <input type="checkbox" class="form-check-input" id="chkColor">
-                <label class="form-check-label">Indicar el color</label>
+                <label class="form-check-label" for="chkColor">Indicar el color</label>
             </div>
             <div class="form-check col-sm-6">
                 <label for="inputColor" class="col-sm-2 form-label">Color</label>
                 <input name="color" type="color" class="up form-control form-control-color"
-                    id="inputColor" value="{{old('color') ?? '#FFFFF'}}">
+                    id="inputColor" value="{{old('color') ?? '#FFFFFF'}}">
             </div>
         </div>
         <script>
             inputColor.disabled = !chkColor.checked;
         
             chkColor.onchange = function (){
-                inputColor.disabled = !this.checked;
+                inputColor.disabled = !chkColor.checked;
                 }
         </script>
         <div class="form-group row">

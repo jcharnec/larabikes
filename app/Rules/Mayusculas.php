@@ -25,7 +25,8 @@ class Mayusculas implements Rule
      */
     public function passes($attribute, $value)
     {
-        //
+        //retorna true si el valor está en mayusculas
+        return $value == strtoupper($value);
     }
 
     /**
@@ -35,6 +36,6 @@ class Mayusculas implements Rule
      */
     public function message()
     {
-        return 'The validation error message.';
+        return 'El campo :attribute debe estar en mayúsculas.';
     }
 }

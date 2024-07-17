@@ -58,13 +58,21 @@
             <td style="background-color:{{ $bike->color }}">{{$bike->color}}</td>
             <td class="text-center">
                 <a href="{{route('bikes.show', $bike->id)}}">
-                    <img height="20" width="20" alt="Ver detalles" title="Ver detalles" src="{{asset('images/buttons/show.svg')}}"></a>
+                    <img height="20" width="20" alt="Ver detalles" title="Ver detalles" 
+                        src="{{asset('images/buttons/show.svg')}}"></a>
                 
                 @auth
-                <a href="{{route('bikes.edit', $bike->id)}}">
-                    <img height="20" width="20" alt="Modificar" title="Modificar" src="{{asset('images/buttons/edit.svg')}}"></a>
-                <a href="{{route('bikes.delete', $bike->id)}}">
-                    <img height="20" width="20" alt="Borrar" title="Borrar" src="{{asset('images/buttons/delete.svg')}}"></a>
+                    @if(Auth::user()->can('update', $bike))
+                        <a href="{{route('bikes.edit', $bike->id)}}">
+                        <img height="20" width="20" alt="Modificar" title="Modificar" 
+                            src="{{asset('images/buttons/edit.svg')}}"></a>
+                    @endif
+                    
+                    @if(Auth::user()->can('delete', $bike))
+                        <a href="{{route('bikes.delete', $bike->id)}}">
+                        <img height="20" width="20" alt="Borrar" title="Borrar" 
+                            src="{{asset('images/buttons/delete.svg')}}"></a>
+                    @endif
                 @endauth
             </td>
         </tr>
