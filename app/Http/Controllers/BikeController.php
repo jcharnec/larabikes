@@ -15,6 +15,9 @@ use Symfony\Component\HttpKernel\Exception\HttpException;
 use App\Models\User;
 use App\Http\Requests\BikeRequest;
 use App\Http\Requests\BikeUpdateRequest;
+use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\URL;
+
 
 class BikeController extends Controller
 {
@@ -119,9 +122,9 @@ class BikeController extends Controller
         // si es la primera moto que crea el usuario...
         // (para hacerlo bien, se debería hacer con un campo de la BDD, puesto que así
         //cada vez que borre y cree la primera se despachará el evento)
-        if($request->user()->bikes->count() == 1)
+        if ($request->user()->bikes->count() == 1)
             FirstBikeCreated::dispatch($bike, $request->user());
-        
+
         //redirección a los detalles de la moto creada
         return redirect()
             ->route('bikes.show', $bike->id)
@@ -217,56 +220,54 @@ class BikeController extends Controller
      * 
      * @param Bike
      * @return \Illuminate\Http\Response
-     */
-    public function delete(BikeDeleteRequest $request, Bike $bike)
+     */    public function delete(BikeDeleteRequest $request, Bike $bike)
     {
-        // muestra la vista de confirmación de eliminación
+        // Recuerda la URL anterior para futuras redirecciones
+        Session::put('returnTo', URL::previous());
+        // Muestra la vista de confirmación de eliminación
         return view('bikes.delete', ['bike' => $bike]);
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Elimina la moto (soft delete)
      *
      * @param  Bike
      * @return \Illuminate\Http\Response
      */
     public function destroy(Request $request, Bike $bike)
     {
-        // comprobar la validez de la firma de la URL
-        if (!$request->hasValidSignature())
-            abort(401, 'La firma de la URL no se pudo validar');
+        $bike->delete(); // Soft delete (no podemos borrar la imagen aún)
 
-        if ($request->user()->cant('delete', $bike))
-            abort(401, 'No puedes borrar una moto que no es tuya');
+        // Comprobamos si hay que retornar a algún sitio concreto
+        // en caso contrario iremos a la lista de motos (ruta por defecto)
+        $redirect = Session::has('returnTo') ?
+            redirect(Session::get('returnTo')) :    // por URL
+            redirect()->route('bikes.index');       // por nombre de ruta
 
-        // la borra de la base de datos
-        /*if ($bike->delete() && $bike->imagen)
-            //elimina el fichero
-            Storage::delete(config('filesystems.bikesImageDir') . '/' . $bike->imagen);
-        */
+        // Usaremos la URL por si hay parámetros adicionales a tener en cuenta
+        // por ejemplo con la paginación va el número de página y si usamos el nombre
+        // iremos al inicio de la lista y no a la página actual
+        Session::forget('returnTo'); // Borramos la var de sesión si la hubiera
 
-        $bike->delete(); //soft delete (no podemos borrar la imagen aún)
-
-        //redirige a la lista de motos
-        return redirect()->route('bikes.index')
-            ->with('success', "Moto $bike->marca $bike->modelo eliminada");
+        // Redirige a la lista de motos
+        return $redirect->with('success', "Moto $bike->marca $bike->modelo eliminada.");
     }
 
     public function restore(Request $request, int $id)
     {
-        dd($id);
-        //recuperar la moto borrada
+        // Recuperar la moto borrada
         $bike = Bike::withTrashed()->findOrFail($id);
 
-        if ($request->user()->cant('restore', $bike))
+        // Verificar permisos usando la política de restauración
+        if ($request->user()->cant('restore', $bike)) {
             throw new AuthorizationException('No tienes permiso');
+        }
 
+        // Restaurar la moto
         $bike->restore();
 
-        return back()->with(
-            'success',
-            "Moto $bike->marca $bike->modelo restaurada correctamente."
-        );
+        // Redirigir a la página anterior con un mensaje de éxito
+        return back()->with('success', "Moto $bike->marca $bike->modelo restaurada correctamente.");
     }
 
     public function purge(Request $request)

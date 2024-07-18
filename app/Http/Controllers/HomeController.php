@@ -29,12 +29,12 @@ class HomeController extends Controller
     {
         $user = $request->user();
         $bikes = $request->user()->bikes()->paginate(config('pagination.bikes', 10));
-        $deleteBikes = $request->user()->bikes()->onlyTrashed()->get();
+        $deletedBikes = $request->user()->bikes()->onlyTrashed()->get();
 
         return view('home', [
             'users' => $user,
             'bikes' => $bikes,
-            'deleteBikes' => $deleteBikes,
+            'deleteBikes' => $deletedBikes,
         ]);
     }
 }

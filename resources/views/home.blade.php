@@ -77,7 +77,7 @@
                 </tr>
             </table>
             @if(count($deleteBikes))
-            <h3 class="mt-4">Motos borradas de {{ $users->name }}</h3>
+            <h3 class="mt-4">Motos borradas</h3>
             <table class="table table-striped table-bordered">
                 <tr>
                     <th>ID</th>
@@ -85,7 +85,6 @@
                     <th>Marca</th>
                     <th>Modelo</th>
                     <td>Matricula</td>
-                    <td>Color</td>
                     <th></th>
                     <th></th>
                 </tr>
@@ -93,18 +92,21 @@
                 <tr>
                     <td><b>#{{$bike->id}}</b></td>
                     <td class="text-center" style="max-width: 80px">
-                        <img class="rounded" style="max-width: 80%" alt="Imagen de {{$bike->marca}} {{$bike->modelo}}" title="Imagen de {{$bike->marca}} {{$bike->modelo}}" src="{{$bike->imagen?
-                        asset('storage/'.config('filesystems.bikesImageDir')).'/'.$bike->imagen:
-                        asset('storage/'.config('filesystems.bikesImageDir')).'/default.jpg'}}">
+                        <img class="rounded" style="max-width: 80%" 
+                        alt="Imagen de {{$bike->marca}} {{$bike->modelo}}" 
+                        title="Imagen de {{$bike->marca}} {{$bike->modelo}}" 
+                        src="{{$bike->imagen?
+                            asset('storage/'.config('filesystems.bikesImageDir')).'/'.$bike->imagen:
+                            asset('storage/'.config('filesystems.bikesImageDir')).'/default.jpg'}}">
                     </td>
                     <td>{{$bike->marca}}</td>
                     <td>{{$bike->modelo}}</td>
                     <td>{{$bike->matricula}}</td>
-                    <td style="background-color:{{$bike->color}}">{{$bike->color}}</td>
                     <td class="text-center">
-                        <a href="{{route('bikes.restore', $bike->id)}}">
+                        <form method="POST" action="{{ route('bikes.restore', $bike->id) }}">
+                            @csrf
                             <button class="btn btn-success">Restaurar</button>
-                        </a>
+                        </form>
                     </td>
                     <td class="text-center">
                         <a onclick='
