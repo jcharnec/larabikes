@@ -10,6 +10,8 @@ use App\Models\Bike;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\UserController;
+use App\Models\User;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -26,9 +28,28 @@ Route::prefix('admin')->middleware('auth', 'is_admin')->group(function (){
     //ver las motos eliminadas (/admin/deletedbikes)
     Route::get('deletedbikes', [AdminController::class, 'deletedbikes'])
             ->name('admin.deleted.bikes');
+    //detalles de un usuario
+    Route::get('usuario/{user}/detalles', [AdminController::class, 'userShow'])
+            ->name('admin.user.show');
+    //listado de usuarios
+    Route::get('usuarios', [AdminController::class, 'userList'])
+            ->name('admin.users');
+    //búsqueda de usuarios
+    Route::get('usuario/buscar', [AdminController::class, 'userSearch'])
+            ->name('admin.users.search');    
+    // añadir un rol
+    Route::post('role', [AdminController::class, 'setRole'])
+            ->name('admin.user.setRole');
+    //quitar un rol
+    Route::delete('role', [AdminController::class, 'removeRole'])
+            ->name('admin.user.removeRole');
 });
 
 Auth::routes(['verify' => true]);
+
+//ruta de usuarios bloqueados
+Route::get('/bloqueado', [UserController::class, 'blocked'])
+    ->name('user.blocked');
 
 Route::post('/email/verification-notification', function (Request $request) {
     $request->user()->sendEmailVerificationNotification();
