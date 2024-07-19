@@ -48,7 +48,7 @@ class RouteServiceProvider extends ServiceProvider
                 ->group(base_path('routes/web.php'));
         });
     
-        Route::model('bike', \App\Models\Bike::class);
+        //Route::model('bike', \App\Models\Bike::class);
 
         Route::bind('precio', function($precio){
             return \App\Models\Bike::where('precio', '<=', "$precio")->paginate(10);
