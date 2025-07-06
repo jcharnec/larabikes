@@ -24,9 +24,10 @@ COPY . /var/www/html
 
 WORKDIR /var/www/html
 
-# Permisos
+# Permisos para storage y bootstrap/cache
 RUN chown -R www-data:www-data /var/www/html \
-    && chmod -R 755 /var/www/html/storage
+    && chmod -R 755 /var/www/html/storage \
+    && chmod -R 755 /var/www/html/bootstrap/cache
 
 # Instala Composer
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
