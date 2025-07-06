@@ -1,0 +1,41 @@
+# Imagen base con PHP, Apache y extensiones necesarias
+FROM php:8.2-apache
+
+# Instala dependencias del sistema y extensiones necesarias para Laravel
+RUN apt-get update && apt-get install -y \
+    git \
+    unzip \
+    zip \
+    libzip-dev \
+    libonig-dev \
+    libpq-dev \
+    libpng-dev \
+    libxml2-dev \
+    libcurl4-openssl-dev \
+    && docker-php-ext-install pdo pdo_mysql zip mbstring curl
+
+# Habilita el módulo de reescritura de Apache
+RUN a2enmod rewrite
+
+# Copia el código fuente de Laravel dentro del contenedor
+COPY . /var/www/html
+
+# Define el directorio de trabajo
+WORKDIR /var/www/html
+
+# Ajusta los permisos de Laravel
+RUN chown -R www-data:www-data /var/www/html \
+    && chmod -R 755 /var/www/html/storage
+
+# Instala Composer
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+
+# Ejecuta composer install (si usas deploy manual, omítelo)
+RUN composer install --no-dev --optimize-autoloader
+
+# Configura el entorno en producción (Render puede usar variables)
+ENV APP_ENV=production
+ENV APP_KEY=base64:SomeRandomKey=   # Puedes cambiar esto si no usas .env
+
+# Exponer el puerto 80
+EXPOSE 80
