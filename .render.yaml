@@ -1,27 +1,19 @@
-services:
-  - type: web
-    name: larabikes
-    env: docker
-    repo: https://github.com/jcharnec/larabikes
-    branch: master
-    dockerfilePath: ./Dockerfile
-    plan: free
-    envVars:
-      - key: APP_ENV
-        value: production
-      - key: APP_KEY
-        value: base64:TU_CLAVE_GENERADA
-      - key: APP_DEBUG
-        value: false
-      - key: DB_CONNECTION
-        value: mysql
-      - key: DB_HOST
-        value: TU_HOST_MYSQL
-      - key: DB_PORT
-        value: 3306
-      - key: DB_DATABASE
-        value: larabikes
-      - key: DB_USERNAME
-        value: TU_USUARIO
-      - key: DB_PASSWORD
-        value: TU_PASSWORD
+envVars:
+  - key: APP_ENV
+    value: production
+  - key: APP_KEY
+    value: base64:iIMwZ7mPq56G8ydp81+stIuITF4V73YRipKjDB2T5gI=
+  - key: APP_DEBUG
+    value: false
+  - key: DB_CONNECTION
+    value: mysql
+  - key: DB_HOST
+    value: 127.0.0.1
+  - key: DB_PORT
+    value: 3306
+  - key: DB_DATABASE
+    value: larabikes
+  - key: DB_USERNAME
+    value: root
+  - key: DB_PASSWORD
+    value: ""

@@ -1,4 +1,3 @@
-# Imagen base con PHP, Apache y extensiones necesarias
 FROM php:8.2-apache
 
 # Instala dependencias del sistema y extensiones necesarias para Laravel
@@ -30,12 +29,8 @@ RUN chown -R www-data:www-data /var/www/html \
 # Instala Composer
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
-# Ejecuta composer install (si usas deploy manual, omítelo)
+# Ejecuta composer install
 RUN composer install --no-dev --optimize-autoloader
-
-# Configura el entorno en producción (Render puede usar variables)
-ENV APP_ENV=production
-ENV APP_KEY=base64:SomeRandomKey=   # Puedes cambiar esto si no usas .env
 
 # Exponer el puerto 80
 EXPOSE 80
