@@ -1,7 +1,7 @@
         @extends('layouts.master')
 
         @section('titulo', "Actualización de la moto $bike->marca $bike->modelo")
-        
+
         @section('contenido')
         <form class="my-2 border p-5" method="POST" action="{{route('bikes.update', $bike->id)}}" enctype="multipart/form-data">
             {{csrf_field()}}
@@ -21,13 +21,13 @@
             </div>
             <div class="form-group row my-3">
                 <label for="inputKms" class="col-sm-2 col-form-label">Kms</label>
-                <input name="kms" value="{{old('kms', $bike->kms)}}" type="number" 
-                class="form-control col-sm-4" id="inputKms">
+                <input name="kms" value="{{old('kms', $bike->kms)}}" type="number"
+                    class="form-control col-sm-4" id="inputKms">
             </div>
             <div class="form-group row my-3">
                 <div class="form-check col-sm-6">
-                    <input name="matriculada" value="1" class="form-check-input" 
-                    type="checkbox" id="chkMatriculada" {{$bike->matriculada? "checked":""}}>
+                    <input name="matriculada" value="1" class="form-check-input"
+                        type="checkbox" id="chkMatriculada" {{$bike->matriculada? "checked":""}}>
                     <label class="form-check-label" for="chkMatriculada">Matriculada</label>
                 </div>
                 <div class="form-check col-sm-6">
@@ -39,7 +39,7 @@
             <script>
                 inputMatricula.disabled = !chkMatriculada.checked;
 
-                chkMatriculada.onchange = function(){
+                chkMatriculada.onchange = function() {
                     inputMatricula.disabled = !chkMatriculada.checked;
                 }
             </script>
@@ -59,7 +59,7 @@
             <script>
                 inputColor.disabled = !chkColor.checked;
 
-                chkColor.onchange =function(){
+                chkColor.onchange = function() {
                     inputColor.disabled = !chkColor.checked;
                 }
             </script>
@@ -77,7 +77,7 @@
                         <label for="inputEliminar" class="form-check-label">Eliminar imagen</label>
                     </div>
                     <script>
-                        inputEliminar.onchange = function(){
+                        inputEliminar.onchange = function() {
                             inputImagen.disabled = this.checked;
                         }
                     </script>
@@ -103,17 +103,19 @@
         <div class="text-end my-3">
             <div class="btn-group mx-2">
                 <a class="mx-2" href="{{route('bikes.show', $bike->id)}}">
-                    <img height="40" width="40" alt="Detalles" title="Detalles">
+                    <img src="{{ asset('images/buttons/show.svg') }}" height="40" width="40" alt="Detalles" title="Detalles">
                 </a>
                 <a class="mx-2" href="{{route('bikes.delete', $bike->id)}}">
-                    <img height="40" width="40" alt="Borrar" title="Borrar">
+                    <img src="{{ asset('images/buttons/delete.svg') }}" height="40" width="40" alt="Borrar" title="Borrar">
+                </a>
+
                 </a>
             </div>
         </div>
         @endsection
 
         @section('enlaces')
-            @parent
-                <a href="{{route('bikes.index')}}" class="btn btn-primary m-2">Garaje</a>
-        
+        @parent
+        <a href="{{route('bikes.index')}}" class="btn btn-primary m-2">Garaje</a>
+
         @endsection
