@@ -62,16 +62,17 @@
         <div class="text-end my-3">
             <div class="btn-group mx-2">
                 <a class="mx-2" href="{{route('bikes.edit', $bike->id)}}">
-                    <img height="40" width="40" alt="Modificar" title="Modificar">
+                    <img height="40" width="40" alt="Modificar" title="Modificar" src="{{ asset('images/buttons/edit.svg') }}">
                 </a>
                 <a class="mx-2" href="{{route('bikes.delete', $bike->id)}}">
-                    <img height="40" width="40" alt="Borrar" title="Borrar">
+                    <img height="40" width="40" alt="Borrar" title="Borrar" src="{{ asset('images/buttons/delete.svg') }}">
                 </a>
+
             </div>
         </div>
         @endsection
 
         @section('enlaces')
-            @parent
-            <a href="{{route('bikes.index')}}" class="btn btn-primary m-2">Garaje</a>
+        @parent
+        <a href="{{route('bikes.index')}}" class="btn btn-primary m-2">Garaje</a>
         @endsection
