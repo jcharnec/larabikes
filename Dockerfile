@@ -26,4 +26,10 @@ RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" &&
     php -r "unlink('composer-setup.php');" && \
     composer install --no-dev --optimize-autoloader
 
+RUN php artisan config:clear && \
+    php artisan cache:clear && \
+    php artisan route:clear && \
+    php artisan view:clear && \
+    php artisan storage:link
+
 EXPOSE 80
