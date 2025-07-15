@@ -49,9 +49,9 @@ class BikeController extends Controller
 
     /**
      * Function search
-     * 
+     *
      * @param mixed $name
-     * 
+     *
      */
     public function search(Request $request, $marca = null, $modelo = null)
     {
@@ -97,9 +97,24 @@ class BikeController extends Controller
 
         // recuperar datos del forumlario excepto la imagen
         $datos = $request->only([
-            'marca', 'modelo', 'precio', 'kms', 'matriculada',
-            'user_id', 'matricula', 'color'
+            'marca',
+            'modelo',
+            'precio',
+            'kms',
+            'matriculada',
+            'user_id',
+            'matricula',
+            'color'
         ]);
+
+        // ✅ Verificar si existe esa matrícula (incluso eliminada)
+        $existe = Bike::withTrashed()->where('matricula', $datos['matricula'])->exists();
+
+        if ($existe) {
+            return back()
+                ->withInput()
+                ->withErrors(['matricula' => 'Ya existe una moto con esta matrícula, incluso aunque esté eliminada.']);
+        }
 
         //el valor por defecto para la imagen será NULL
         $datos += ['imagen' => NULL];
@@ -217,7 +232,7 @@ class BikeController extends Controller
 
     /**
      * Muestra el formulario de confirmación de borrado de la moto
-     * 
+     *
      * @param Bike
      * @return \Illuminate\Http\Response
      */    public function delete(BikeDeleteRequest $request, Bike $bike)
