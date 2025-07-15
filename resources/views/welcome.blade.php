@@ -7,12 +7,15 @@
 @section('contenido')
 <div class="container my-4">
     <!-- Hero principal -->
-    <div class="card text-bg-dark mb-4">
-        <img src="{{ asset('images/bikes/bike0.png') }}" class="card-img" alt="Moto de Caneda en Akira" style="object-fit: cover; height: 400px;">
-        <div class="card-img-overlay d-flex flex-column justify-content-center text-center">
-            <h1 class="card-title display-4">LaraBikes</h1>
-            <p class="card-text fs-4">Encuentra tu moto perfecta. Explora, publica y gestiona tu garaje online.</p>
-            <a href="{{ route('bikes.index') }}" class="btn btn-outline-light btn-lg mt-3">Ver motos</a>
+    <div class="position-relative mb-4 hero-banner">
+        <img src="{{ asset('images/bikes/bike0.png') }}" class="img-fluid w-100 hero-image" alt="Moto de Caneda en Akira">
+        <div class="overlay"></div>
+        <div class="hero-text text-center text-white">
+            <h1 class="display-4 fw-bold">LaraBikes</h1>
+            <p class="lead">Encuentra tu moto perfecta. Explora, publica y gestiona tu garaje online.</p>
+            <a href="{{ route('bikes.index') }}" class="btn btn-outline-light btn-lg mt-3">
+                Ver motos
+            </a>
         </div>
     </div>
 
