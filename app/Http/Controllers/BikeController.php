@@ -94,8 +94,7 @@ class BikeController extends Controller
      */
     public function store(BikeRequest $request)
     {
-
-        // recuperar datos del forumlario excepto la imagen
+        // recuperar datos del formulario excepto la imagen
         $datos = $request->only([
             'marca',
             'modelo',
@@ -107,45 +106,58 @@ class BikeController extends Controller
             'color'
         ]);
 
-        // ✅ Verificar si existe esa matrícula (incluso eliminada)
-        $existe = Bike::withTrashed()->where('matricula', $datos['matricula'])->exists();
+        // ✅ Verificar solo si está matriculada
+        if (!empty($datos['matriculada'])) {
+            if (!empty($datos['matricula'])) {
+                $existe = Bike::withTrashed()
+                    ->where('matricula', $datos['matricula'])
+                    ->exists();
 
-        if ($existe) {
-            return back()
-                ->withInput()
-                ->withErrors(['matricula' => 'Ya existe una moto con esta matrícula, incluso aunque esté eliminada.']);
+                if ($existe) {
+                    return back()
+                        ->withInput()
+                        ->withErrors(['matricula' => 'Ya existe una moto con esta matrícula, incluso aunque esté eliminada.']);
+                }
+            } else {
+                return back()
+                    ->withInput()
+                    ->withErrors(['matricula' => 'Debe ingresar la matrícula si la moto está marcada como matriculada.']);
+            }
+        } else {
+            // si no está matriculada, aseguramos que se guarde NULL
+            $datos['matricula'] = null;
         }
 
-        //el valor por defecto para la imagen será NULL
+        // el valor por defecto para la imagen será NULL
         $datos += ['imagen' => NULL];
 
-        //recuperación de la imagen
+        // recuperación de la imagen
         if ($request->hasFile('imagen')) {
-            //sube la imagen al directorio indicando en el fichero de config
+            // sube la imagen al directorio indicado en el fichero de config
             $ruta = $request->file('imagen')->store(config('filesystems.bikesImageDir'));
 
-            //nos quedamos solo con el nombre del fichero para añadirlo a la BDD
+            // nos quedamos solo con el nombre del fichero para añadirlo a la BDD
             $datos['imagen'] = pathinfo($ruta, PATHINFO_BASENAME);
         }
 
         // recupera el id del usuario identificado y lo guarda en user_id de la moto
         $datos['user_id'] = auth()->user()->id;
 
-        //creación y guardado de la nueva moto con todos los datos POST
+        // creación y guardado de la nueva moto con todos los datos POST
         $bike = Bike::create($datos);
 
         // si es la primera moto que crea el usuario...
-        // (para hacerlo bien, se debería hacer con un campo de la BDD, puesto que así
-        //cada vez que borre y cree la primera se despachará el evento)
-        if ($request->user()->bikes->count() == 1)
+        if ($request->user()->bikes->count() == 1) {
             FirstBikeCreated::dispatch($bike, $request->user());
+        }
 
-        //redirección a los detalles de la moto creada
+        // redirección a los detalles de la moto creada
         return redirect()
             ->route('bikes.show', $bike->id)
             ->with('success', "Moto $bike->marca $bike->modelo añadida satisfactoriamente")
             ->cookie('lastInsertID', $bike->id, 0);
     }
+
 
     /**
      * Display the specified resource.
