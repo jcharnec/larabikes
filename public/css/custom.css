@@ -92,14 +92,22 @@ footer a:hover {
 }
 
 /* Pagination */
-.page-link {
+.page-item .page-link {
+    color: #343a40;
+    border-color: #ced4da;
+    background-color: #fff;
+}
+
+.page-item .page-link:hover {
+    background-color: #e9ecef;
     color: #198754;
     border-color: #198754;
 }
-.page-link:hover {
+
+.page-item.active .page-link {
     background-color: #198754;
-    color: #fff;
     border-color: #198754;
+    color: #fff;
 }
 
 /* Img thumbnails */
