@@ -165,7 +165,7 @@ class BikeController extends Controller
      * @param  Bike
      * @return \Illuminate\Http\Response
      */
-    public function edit(BikeUpdateRequest $request, Bike $bike)
+    public function edit(Bike $bike)
     {
         //carga la vista correspondiente y le pasa la moto
         return view('bikes.update')->with('bike', $bike);
