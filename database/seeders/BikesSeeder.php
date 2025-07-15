@@ -14,6 +14,10 @@ class BikesSeeder extends Seeder
      */
     public function run()
     {
-        Bike::factory(200)->create();
+        if (Bike::count() == 0) {
+            Bike::factory(200)->create();
+        } else {
+            echo "Bikes table already has data. Skipping seeding.\n";
+        }
     }
 }

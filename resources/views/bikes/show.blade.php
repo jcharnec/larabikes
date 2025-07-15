@@ -1,7 +1,7 @@
         @extends('layouts.master')
 
         @section('titulo', "Mostrar Moto: $bike->marca $bike->modelo")
-        
+
         @section('contenido')
         <table class="table table-striped table-bordered">
             <tr>
@@ -52,9 +52,10 @@
                         alt="Imagen de {{$bike->marca}} {{$bike->modelo}}"
                         title="Imagen de {{$bike->marca}} {{$bike->modelo}}"
                         src="{{
-                            $bike->imagen?
-                            asset('storage/'.config('filesystems.bikesImageDir')).'/'.$bike->imagen:
-                            asset('storage/'.config('filesystems.bikesImageDir')).'/default.jpg'}}">
+    $bike->imagen
+        ? asset('storage/' . config('filesystems.bikesImageDir') . '/' . $bike->imagen)
+        : asset('images/bikes/default.jpg')
+}}">
                 </td>
             </tr>
         </table>
