@@ -1,26 +1,117 @@
-.nav-pills .nav-link.active {
-    background-color: #0d6efd !important;
-    color: #fff !important;
-    border-radius: 0.25rem;
-}
+/* General */
 body {
     background-color: #f8f9fa;
-}
-table img.rounded {
-    max-width: 80px;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-}
-.page-link {
-    color: #212529; /* color del texto (negro Bootstrap) */
+    color: #212529;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
-.page-link:hover {
-    color: #198754; /* verde Bootstrap hover */
+/* Links */
+a {
+    text-decoration: none;
+    transition: color 0.2s;
+}
+a:hover {
+    color: #198754; /* Bootstrap green */
 }
 
-.page-item.active .page-link {
-    background-color: #198754; /* verde Bootstrap para activo */
-    border-color: #198754;
+/* Navbar */
+.navbar-dark .navbar-nav .nav-link {
+    color: #ddd;
+}
+.navbar-dark .navbar-nav .nav-link.active,
+.navbar-dark .navbar-nav .nav-link:hover {
     color: #fff;
+    background-color: #198754;
+    border-radius: 0.25rem;
+}
+
+/* Buttons */
+.btn-outline-dark {
+    border-color: #343a40;
+    color: #343a40;
+}
+.btn-outline-dark:hover {
+    background-color: #343a40;
+    color: #fff;
+}
+
+.btn-outline-success {
+    border-color: #198754;
+    color: #198754;
+}
+.btn-outline-success:hover {
+    background-color: #198754;
+    color: #fff;
+}
+
+/* Alerts */
+.alert {
+    border-radius: 0.4rem;
+}
+
+/* Tables */
+.table-hover tbody tr:hover {
+    background-color: #f1f3f5;
+}
+.table th {
+    background-color: #343a40;
+    color: #fff;
+}
+.table td {
+    vertical-align: middle;
+}
+
+/* Forms */
+.form-control,
+.form-select {
+    border-radius: 0.4rem;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+.form-control:focus {
+    border-color: #198754;
+    box-shadow: 0 0 0 0.2rem rgba(25, 135, 84, 0.25);
+}
+
+/* Cards */
+.card {
+    border: none;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    border-radius: 0.5rem;
+}
+
+/* Footer */
+footer {
+    border-top: 1px solid #343a40;
+    font-size: 0.9rem;
+}
+footer a {
+    color: #ccc;
+}
+footer a:hover {
+    color: #fff;
+}
+
+/* Pagination */
+.page-link {
+    color: #198754;
+    border-color: #198754;
+}
+.page-link:hover {
+    background-color: #198754;
+    color: #fff;
+    border-color: #198754;
+}
+
+/* Img thumbnails */
+.img-thumbnail {
+    border-radius: 0.5rem;
+    border-color: #ddd;
+}
+
+/* Custom icons sizing */
+footer i {
+    transition: transform 0.2s;
+}
+footer i:hover {
+    transform: scale(1.1);
 }
