@@ -1,0 +1,26 @@
+.nav-pills .nav-link.active {
+    background-color: #0d6efd !important;
+    color: #fff !important;
+    border-radius: 0.25rem;
+}
+body {
+    background-color: #f8f9fa;
+}
+table img.rounded {
+    max-width: 80px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+.page-link {
+    color: #212529; /* color del texto (negro Bootstrap) */
+}
+
+.page-link:hover {
+    color: #198754; /* verde Bootstrap hover */
+}
+
+.page-item.active .page-link {
+    background-color: #198754; /* verde Bootstrap para activo */
+    border-color: #198754;
+    color: #fff;
+}

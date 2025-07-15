@@ -9,10 +9,12 @@
 
     <!-- CSS para Bootstrap -->
     <link rel="stylesheet" type="text/css" href="{{asset('css/bootstrap.min.css')}}">
+    <link rel="stylesheet" href="{{ asset('css/custom.css') }}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
     <script src="{{(asset('js/bootstrap.bundle.js'))}}"></script>
 </head>
 
-<body class="container p-3">
+<body class="container p-3 bg-light">
     <!-- PARTE SUPERIOR -->
     @section('navegacion')
     <!-- @php($pagina = $pagina ?? '') -->
@@ -23,99 +25,96 @@
                 {{ config('app.name', 'Laravel') }}
             </h2>
         </div>
-        <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <!-- Left Side Of Navbar -->
-                <ul class="navbar-nav me-auto">
-                    <div class="container">
-                        <ul class="nav nav-pills my-3">
-                            <li class="nav-item mr-2">
-                                <a class="nav-link {{$pagina =='portada'? 'active' : ''}}" href="{{route('welcome')}}">Inicio</a>
-                            </li>
-                            <li class="nav-item mr-2">
-                                <a class="nav-link {{$pagina == 'bikes.index' ||
-                                    $pagina == 'bikes.search'? 'active':''}}" href="{{route('bikes.index')}}">Garaje</a>
-                            </li>
-                            <li class="nav-item mr-2">
-                                <a class="nav-link {{$pagina == 'contacto'? 'active':''}}" href="{{route('contacto')}}">Contacto</a>
-                            </li>
-                            @guest
-                            <li class="nav-item mr-2">
-                                <a class="nav-link {{$pagina == 'register'? 'active':''}}" href="{{route('register')}}">Registro</a>
-                            </li>
-                            @endguest
+        <nav class="navbar navbar-expand-md navbar-dark bg-dark mb-4 shadow">
+            <div class="container">
+                <a class="navbar-brand" href="{{ url('/') }}">
+                    {{ config('app.name', 'LaraBikes') }}
+                </a>
 
-                            @auth
-                            <li class="nav-item mr-2">
-                                <a class="nav-link {{$pagina == 'home'? 'active':''}}"
-                                    href="{{route('home')}}">Mis motos</a>
-                            </li>
-                            <li class="nav-item mr-2">
-                                <a class="nav-link {{$pagina =='bikes.create'? 'active':''}}"
-                                    href="{{action([App\Http\Controllers\BikeController::class, 'create'])}}">Nueva moto</a>
-                            </li>
-                            @if(Auth::user()->hasRole('administrador'))
-                            <li class="nav-item mr-2">
-                                <a class="nav-link {{$pagina =='admin.deleted.bikes'? 'active':''}}"
-                                    href="{{route('admin.deleted.bikes')}}">Motos borradas</a>
-                            </li>
+                <!-- BOTÓN HAMBURGUESA -->
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
 
-                            <li class="nav-item mr-2">
-                                <a class="nav-link
-                                            {{$pagina =='admin.users' || $pagina=='admin.users.search' ? 'active':''}}"
-                                    href="{{route('admin.users')}}">Gestión de usuarios</a>
-                            </li>
-                            @endif
-                            @endauth
-                        </ul>
-                    </div>
-                </ul>
-                <!-- Right Side Of Navbar -->
-                <ul class="navbar-nav ms-auto">
-                    <!-- Authentication Links -->
-                    @guest
-                    @if (Route::has('login'))
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('login') }}">{{ __('Login') }}</a>
-                    </li>
-                    @endif
+                <!-- CONTENIDO QUE SE COLAPSA -->
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <!-- IZQUIERDA -->
+                    <ul class="navbar-nav me-auto mb-2 mb-md-0">
+                        <li class="nav-item">
+                            <a class="nav-link {{$pagina == 'portada' ? 'active' : ''}}" href="{{ route('welcome') }}">Inicio</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {{$pagina == 'bikes.index' || $pagina == 'bikes.search' ? 'active' : ''}}" href="{{ route('bikes.index') }}">Garaje</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {{$pagina == 'contacto' ? 'active' : ''}}" href="{{ route('contacto') }}">Contacto</a>
+                        </li>
 
-                    @if (Route::has('register'))
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('register') }}">{{ __('Register') }}</a>
-                    </li>
-                    @endif
-                    @else
-                    <li class="nav-item dropdown">
-                        <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
-                            {{ Auth::user()->name }} ({{ Auth::user()->email}})
-                        </a>
+                        @guest
+                        <li class="nav-item">
+                            <a class="nav-link {{$pagina == 'register' ? 'active' : ''}}" href="{{ route('register') }}">Registro</a>
+                        </li>
+                        @endguest
 
-                        <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                            <a class="dropdown-item" href="{{ route('logout') }}" onclick="event.preventDefault();
-                                                    document.getElementById('logout-form').submit();">
-                                {{ __('Logout') }}
+                        @auth
+                        <li class="nav-item">
+                            <a class="nav-link {{$pagina == 'home' ? 'active' : ''}}" href="{{ route('home') }}">Mis motos</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {{$pagina == 'bikes.create' ? 'active' : ''}}" href="{{ action([App\Http\Controllers\BikeController::class, 'create']) }}">Nueva moto</a>
+                        </li>
+
+                        @if(Auth::user()->hasRole('administrador'))
+                        <li class="nav-item">
+                            <a class="nav-link {{$pagina == 'admin.deleted.bikes' ? 'active' : ''}}" href="{{ route('admin.deleted.bikes') }}">Motos borradas</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {{$pagina == 'admin.users' || $pagina == 'admin.users.search' ? 'active' : ''}}" href="{{ route('admin.users') }}">Gestión de usuarios</a>
+                        </li>
+                        @endif
+                        @endauth
+                    </ul>
+
+                    <!-- DERECHA -->
+                    <ul class="navbar-nav ms-auto mb-2 mb-md-0">
+                        @guest
+                        @if (Route::has('login'))
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('login') }}">{{ __('Login') }}</a>
+                        </li>
+                        @endif
+
+                        @if (Route::has('register'))
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('register') }}">{{ __('Register') }}</a>
+                        </li>
+                        @endif
+                        @else
+                        <li class="nav-item dropdown">
+                            <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+                                {{ Auth::user()->name }} ({{ Auth::user()->email}})
                             </a>
-
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                                <li>
+                                    <a class="dropdown-item" href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                        {{ __('Logout') }}
+                                    </a>
+                                </li>
+                            </ul>
                             <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
                                 @csrf
                             </form>
-                        </div>
-                    </li>
-                    @endguest
-                </ul>
+                        </li>
+                        @endguest
+                    </ul>
+                </div>
             </div>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-    </div>
-    </nav>
+        </nav>
     </div>
     @show
 
     <!-- PARTE CENTRAL -->
     <!-- @includeWhen($errors->any(), 'layouts.error') -->
-    <h1 class="my-2">Primer ejempo de CRUD con Laravel</h1>
 
     <main>
         <h2>@yield('titulo')</h2>
@@ -134,22 +133,21 @@
         </x-alert>
         @endif
 
-        <!-- Probando el nuevo componente -->
-        <!--<x-alert type="success" message="Pasando información al componente">
-            <p>Hay otro mensaje:</p>
-        </x-alert>-->
-
-        <p>Contamos con un catálogo de {{$total}} motos.</p>
+        @if(isset($total))
+        <p>Contamos con un catálogo de {{ $total }} motos.</p>
+        @endif
 
         @yield('contenido')
+
         <div class="d-flex justify-content-center">
             <div class="btn-group" role="group" aria-label="links">
                 @section('enlaces')
-                <a href="{{url()->previous()}}" class="btn btn-primary m-2">Atrás</a>
-                <a href="{{ route('welcome') }}" class="btn btn-primary m-2">Inicio</a>
+                <a href="{{ url()->previous() }}" class="btn btn-outline-dark m-2">Atrás</a>
+                <a href="{{ route('welcome') }}" class="btn btn-outline-dark m-2">Inicio</a>
                 @show
             </div>
         </div>
+
         <!-- PARTE INFERIOR -->
         @section('pie')
         <footer class="page-footer font-small p-4 bg-light">
@@ -157,8 +155,8 @@
                 Desarrollado haciendo uso de <b>Laravel</b> y <b>Bootstrap</b>.</p>
         </footer>
         @show
-        </div>
     </main>
+
 </body>
 
 </html>

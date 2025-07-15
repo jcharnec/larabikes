@@ -15,5 +15,5 @@
 @endsection
 
 @section('enlaces')
-<a href="{{route('bikes.index')}}" class="btn btn-primary m-2">Garaje</a>
+<a href="{{ route('bikes.index') }}" class="btn btn-outline-dark m-2">Garaje</a>
 @endsection

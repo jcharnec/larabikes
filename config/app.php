@@ -13,7 +13,7 @@ return [
     |
     */
 
-    'name' => env('APP_NAME', 'LaraBikes en CIFO Sabadell'),
+    'name' => env('APP_NAME', ''),
 
     /*
     |--------------------------------------------------------------------------

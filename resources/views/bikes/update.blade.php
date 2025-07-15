@@ -101,21 +101,19 @@
         </form>
         <div class="text-end my-3"></div>
         <div class="text-end my-3">
-            <div class="btn-group mx-2">
-                <a class="mx-2" href="{{route('bikes.show', $bike->id)}}">
-                    <img src="{{ asset('images/buttons/show.svg') }}" height="40" width="40" alt="Detalles" title="Detalles">
+            <div class="btn-group">
+                <a href="{{ route('bikes.show', $bike->id) }}" class="btn btn-outline-secondary btn-sm" title="Detalles">
+                    <i class="bi bi-eye"></i>
                 </a>
-                <a class="mx-2" href="{{route('bikes.delete', $bike->id)}}">
-                    <img src="{{ asset('images/buttons/delete.svg') }}" height="40" width="40" alt="Borrar" title="Borrar">
-                </a>
-
+                <a href="{{ route('bikes.delete', $bike->id) }}" class="btn btn-outline-danger btn-sm" title="Borrar">
+                    <i class="bi bi-trash"></i>
                 </a>
             </div>
+
         </div>
         @endsection
 
         @section('enlaces')
         @parent
-        <a href="{{route('bikes.index')}}" class="btn btn-primary m-2">Garaje</a>
-
+        <a href="{{ route('bikes.index') }}" class="btn btn-outline-dark m-2">Garaje</a>
         @endsection
