@@ -46,26 +46,26 @@
                             @endguest
 
                             @auth
-                                <li class="nav-item mr-2">
-                                    <a class="nav-link {{$pagina == 'home'? 'active':''}}"
-                                        href="{{route('home')}}">Mis motos</a>
-                                </li>
-                                <li class="nav-item mr-2">
-                                    <a class="nav-link {{$pagina =='bikes.create'? 'active':''}}"
-                                        href="{{action([App\Http\Controllers\BikeController::class, 'create'])}}">Nueva moto</a>
-                                </li>
-                                @if(Auth::user()->hasRole('administrador'))
-                                    <li class="nav-item mr-2">
-                                        <a class="nav-link {{$pagina =='admin.deleted.bikes'? 'active':''}}"
-                                            href="{{route('admin.deleted.bikes')}}">Motos borradas</a>
-                                    </li>
+                            <li class="nav-item mr-2">
+                                <a class="nav-link {{$pagina == 'home'? 'active':''}}"
+                                    href="{{route('home')}}">Mis motos</a>
+                            </li>
+                            <li class="nav-item mr-2">
+                                <a class="nav-link {{$pagina =='bikes.create'? 'active':''}}"
+                                    href="{{action([App\Http\Controllers\BikeController::class, 'create'])}}">Nueva moto</a>
+                            </li>
+                            @if(Auth::user()->hasRole('administrador'))
+                            <li class="nav-item mr-2">
+                                <a class="nav-link {{$pagina =='admin.deleted.bikes'? 'active':''}}"
+                                    href="{{route('admin.deleted.bikes')}}">Motos borradas</a>
+                            </li>
 
-                                    <li class="nav-item mr-2">
-                                        <a class="nav-link
+                            <li class="nav-item mr-2">
+                                <a class="nav-link
                                             {{$pagina =='admin.users' || $pagina=='admin.users.search' ? 'active':''}}"
-                                            href="{{route('admin.users')}}">Gestión de usuarios</a>
-                                    </li>
-                                @endif
+                                    href="{{route('admin.users')}}">Gestión de usuarios</a>
+                            </li>
+                            @endif
                             @endauth
                         </ul>
                     </div>
@@ -144,11 +144,12 @@
         @yield('contenido')
         <div class="d-flex justify-content-center">
             <div class="btn-group" role="group" aria-label="links">
-                @section('enlaces')
-                <a href="{{url()->previous()}}" class="btn btn-primary m-2">Atrás</a>
-                <a href="{{ route('welcome') }}" class="btn btn-primary m-2">Inicio</a>
-                @show
+                @yield('enlaces', '
+                <a href="' . url()->previous() . '" class="btn btn-primary m-2">Atrás</a>
+                <a href="' . route('welcome') . '" class="btn btn-primary m-2">Inicio</a>
+                ')
             </div>
+
         </div>
         <!-- PARTE INFERIOR -->
         @section('pie')
