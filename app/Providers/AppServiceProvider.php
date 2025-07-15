@@ -30,8 +30,8 @@ class AppServiceProvider extends ServiceProvider
         View::share('autor', 'Joan Pere Charneco');
 
         if (app()->environment('production')) {
-            URL::forceRootUrl(config('app.url'));
             URL::forceScheme('https');
+            URL::forceRootUrl(config('app.url'));
         }
     }
 }
