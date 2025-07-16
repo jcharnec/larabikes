@@ -81,7 +81,8 @@
                             </table>
                         </div>
                         <div class="col-md-4 text-center mt-3 mt-md-0">
-                            <img class="img-thumbnail rounded shadow-sm mb-2" src="{{ asset('storage/images/users/default.png') }}" alt="Imagen de usuario {{ $user->name }}">
+                            <img src="https://www.gravatar.com/avatar/?d=mp&s=300" class="img-thumbnail rounded shadow-sm mb-2" alt="Imagen de usuario {{ $user->name }}">
+
                             <figcaption class="figure-caption">{{ $user->name }}</figcaption>
                         </div>
                     </div>
