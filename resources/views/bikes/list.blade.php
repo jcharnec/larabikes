@@ -38,64 +38,66 @@
 </div>
 
 <!-- Tabla de motos con cabecera estilizada -->
-<table class="table table-hover table-striped align-middle shadow-sm">
-    <thead class="table-dark">
-        <tr>
-            <th>ID</th>
-            <th>Imagen</th>
-            <th>Marca</th>
-            <th>Modelo</th>
-            <th>Matrícula</th>
-            <th>Color</th>
-            <th class="text-center">Operaciones</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach($bikes as $bike)
-        <tr>
-            <td>{{ $bike->id }}</td>
-            <td class="text-center" style="max-width: 80px">
-                <img class="rounded" style="max-width: 80%"
-                    alt="Imagen de {{ $bike->marca }} {{ $bike->modelo }}"
-                    title="Imagen de {{ $bike->marca }} {{ $bike->modelo }}"
-                    src="{{ $bike->imagen
+<div class="table-responsive">
+    <table class="table table-hover table-striped align-middle">
+        <thead class="table-dark">
+            <tr>
+                <th>ID</th>
+                <th>Imagen</th>
+                <th>Marca</th>
+                <th>Modelo</th>
+                <th>Matrícula</th>
+                <th>Color</th>
+                <th class="text-center">Operaciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach($bikes as $bike)
+            <tr>
+                <td>{{ $bike->id }}</td>
+                <td class="text-center" style="max-width: 80px">
+                    <img class="rounded" style="max-width: 80%"
+                        alt="Imagen de {{ $bike->marca }} {{ $bike->modelo }}"
+                        title="Imagen de {{ $bike->marca }} {{ $bike->modelo }}"
+                        src="{{ $bike->imagen
                         ? asset('storage/' . config('filesystems.bikesImageDir') . '/' . $bike->imagen)
                         : asset('images/bikes/default.jpg') }}">
-            </td>
-            <td>{{ $bike->marca }}</td>
-            <td>{{ $bike->modelo }}</td>
-            <td>{{ $bike->matricula }}</td>
-            <td style="background-color:{{ $bike->color }}">{{ $bike->color }}</td>
-            <td class="text-center">
-                <div class="btn-group">
-                    <a href="{{ route('bikes.show', $bike->id) }}" class="btn btn-outline-secondary btn-sm rounded-circle" title="Ver detalles">
-                        <i class="bi bi-eye"></i>
-                    </a>
-                    @auth
-                    @if(Auth::user()->can('update', $bike))
-                    <a href="{{ route('bikes.edit', $bike->id) }}" class="btn btn-outline-primary btn-sm rounded-circle" title="Editar">
-                        <i class="bi bi-pencil"></i>
-                    </a>
-                    @endif
-                    @if(Auth::user()->can('delete', $bike))
-                    <a href="{{ route('bikes.delete', $bike->id) }}" class="btn btn-outline-danger btn-sm rounded-circle" title="Borrar">
-                        <i class="bi bi-trash"></i>
-                    </a>
-                    @endif
-                    @endauth
-                </div>
-            </td>
-        </tr>
-        @endforeach
-    </tbody>
-    <tfoot>
-        <tr>
-            <td colspan="7" class="text-end small text-muted">
-                Mostrando {{ sizeof($bikes) }} de {{ $bikes->total() }}.
-            </td>
-        </tr>
-    </tfoot>
-</table>
+                </td>
+                <td>{{ $bike->marca }}</td>
+                <td>{{ $bike->modelo }}</td>
+                <td>{{ $bike->matricula }}</td>
+                <td style="background-color:{{ $bike->color }}">{{ $bike->color }}</td>
+                <td class="text-center">
+                    <div class="btn-group">
+                        <a href="{{ route('bikes.show', $bike->id) }}" class="btn btn-outline-secondary btn-sm rounded-circle" title="Ver detalles">
+                            <i class="bi bi-eye"></i>
+                        </a>
+                        @auth
+                        @if(Auth::user()->can('update', $bike))
+                        <a href="{{ route('bikes.edit', $bike->id) }}" class="btn btn-outline-primary btn-sm rounded-circle" title="Editar">
+                            <i class="bi bi-pencil"></i>
+                        </a>
+                        @endif
+                        @if(Auth::user()->can('delete', $bike))
+                        <a href="{{ route('bikes.delete', $bike->id) }}" class="btn btn-outline-danger btn-sm rounded-circle" title="Borrar">
+                            <i class="bi bi-trash"></i>
+                        </a>
+                        @endif
+                        @endauth
+                    </div>
+                </td>
+            </tr>
+            @endforeach
+        </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="7" class="text-end small text-muted">
+                    Mostrando {{ sizeof($bikes) }} de {{ $bikes->total() }}.
+                </td>
+            </tr>
+        </tfoot>
+    </table>
+</div>
 @endsection
 
 @section('enlaces')
